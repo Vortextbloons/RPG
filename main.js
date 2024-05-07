@@ -1,4 +1,4 @@
-import * as fun from './functions.js';
+import * as fun from "./Scripts/funtions.js"
   class Prefix {
     constructor(name, weight, element, stats) {
       this.name = name
@@ -253,10 +253,10 @@ import * as fun from './functions.js';
     }
     return player_stats
   }
-  const foe = fun.generate_enemy(5)
+  const foe = generate_enemy(5)
   
   console.log(foe)
-  const weapon = fun.generate_weapon()
+  const weapon = generate_weapon()
   console.log(weapon)
   
   const player_test = fun.player_stats(weapon)
