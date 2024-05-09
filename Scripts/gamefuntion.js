@@ -1,11 +1,13 @@
-import * as gamevaraibles from './game class and values/game varablesjs'
+import { Weapon } from './game class and values/game class.js';
+import * as gamevaraibles from './game class and values/game varables.js'
 
-import * as unity from './unity.js'
+
+import * as unity from "./unity.js"
 
 function roll_enemy_elite() {
     const number = Math.random();
     if (number > .9) {
-        return random_part(enemy_mod, 'stats');
+        return unity.random_part(gamevaraibles.enemy_mod, 'stats');
     } else {
         return "None";
     }
@@ -70,7 +72,8 @@ function calculate_crit(Crit_chance, Crit_damage) {
 
     return cal_crit_tier()
 }
-function fighting(player, enemy) {
+export function fighting(player, enemy) {
+
     const fightingPlayer = {
         stats: {
             health: player.stats.health,
@@ -92,7 +95,7 @@ function fighting(player, enemy) {
             Crit_damage: enemy.stats.Crit_damage,
             attackSpeed: enemy.stats.attack_speed,
             gold: enemy.stats.coin_value,
-            name: enemy.stats.name
+            name: enemy.enemy_name
         }
     };
 
@@ -101,10 +104,10 @@ function fighting(player, enemy) {
         const playerCrit = calculate_crit(fightingPlayer.stats.Crit_chance, fightingPlayer.stats.Crit_damage);
         let playerDamageDealt = fightingPlayer.stats.damage * playerCrit.final_crit_damage;
         playerDamageDealt *= calculate_defense(fightingEnemy.stats.defense);
+        Math.round(playerDamageDealt)
         fightingEnemy.stats.health -= Math.max(0, playerDamageDealt);
         const isCrit = playerDamageDealt > player.stats.damage;
-        console.log(fightingEnemy.stats.health)
-        console.log(`You hit ${fightingEnemy.stats.name} for ${playerDamageDealt} damage ${isCrit ? `You did a Crit, Tier ${playerCrit.crit_tier}` : ''}. ${fightingEnemy.stats.name}'s health: ${fightingEnemy.stats.health}`);
+        console.log(`You hit ${fightingEnemy.stats.name} for ${playerDamageDealt.toFixed(2)} damage ${isCrit ? `You did a Crit, Tier ${playerCrit.crit_tier}` : ''}. ${fightingEnemy.stats.name}'s health: ${fightingEnemy.stats.health.toFixed(2)}`);
 
         if (fightingEnemy.stats.health <= 0) {
             console.log(`You have defeated ${fightingEnemy.stats.name}!`);
@@ -118,10 +121,12 @@ function fighting(player, enemy) {
         const enemyCrit = calculate_crit(fightingEnemy.stats.Crit_chance, fightingEnemy.stats.Crit_damage)
 
         let enemyDamageDealt = enemyCrit.final_crit_damage * fightingEnemy.stats.damage;
-        enemyDamageDealt *= calculate_defense(fightingPlayer.stats.defense);
+        enemyDamageDealt *= (calculate_defense(fightingPlayer.stats.defense))
         fightingPlayer.stats.health -= Math.max(0, enemyDamageDealt);
+        Math.round(enemyDamageDealt)
         const isCrit = enemyDamageDealt > fightingEnemy.stats.damage;
-        console.log(`${fightingEnemy.stats.name} hits you for ${enemyDamageDealt} damage ${isCrit ? `Critical Hit! Tier ${enemyCrit.crit_tier}` : ''}. Your health: ${fightingPlayer.stats.health}`);
+        console.log(`${fightingEnemy.stats.name} hits you for ${enemyDamageDealt} damage ${isCrit ? `Critical Hit! Tier ${enemyCrit.crit_tier}` : ''}. Your health: ${fightingPlayer.stats.health.toFixed(2)}`);
+
         if (fightingPlayer.stats.health <= 0) {
             console.log(`${fightingEnemy.stats.name} has defeated you!`);
         } else {
@@ -153,21 +158,20 @@ function apply_status(target, attacker) {
         return `You Have Appled No Status`
     }
 }
-function generate_weapon() {
+export function generate_weapon() {
     const pre_fix = unity.random_part(gamevaraibles.prefixes, 'stats')
     const name = unity.random_part(gamevaraibles.weapon_name, 'stats')
     const end = unity.random_part(gamevaraibles.ending, 'stats')
     const rarity = unity.random_part(gamevaraibles.rare, 'weight')
-    const weapon = new gmaeclass.Weapon(gamevaraibles.pre_fix.item_value, name.item_value, end.item_value, rarity.call_value)
-
-
+    const weapon = new Weapon(pre_fix.item_value, name.item_value, end.item_value, rarity.call_value)
     const weaponStats = {
-        Damage: weapon.damage,
-        Crit_chance: weapon.critChance,
-        Crit_damage: weapon.critDamage.toFixed(2),
-        attack_speed: weapon.attackSpeed,
-        element: weapon.element,
-        Status_chance: weapon.Status_chance,
+        Damage: (weapon.weapon_class_stats.damage * gamevaraibles.rare[rarity.call_value].stats.stat_muti).toFixed(2),
+        Crit_chance: (weapon.weapon_class_stats.critChance * gamevaraibles.rare[rarity.call_value].stats.stat_muti).toFixed(2),
+        Crit_damage: (weapon.weapon_class_stats.critDamage * gamevaraibles.rare[rarity.call_value].stats.stat_muti).toFixed(2),
+
+        attack_speed: weapon.weapon_class_stats.attackSpeed,
+        element: weapon.weapon_class_stats.element,
+        Status_chance: (weapon.weapon_class_stats.Status_chance * gamevaraibles.rare[rarity.call_value].stats.stat_muti).toFixed(2),
     };
 
     const weapon_info = {
@@ -177,8 +181,8 @@ function generate_weapon() {
 
     return weapon_info
 }
-function generate_enemy(level) {
-    const enemy_main = unity.random_part(enemy_type, 'stats')
+export function generate_enemy(level) {
+    const enemy_main = unity.random_part(gamevaraibles.enemy_type, 'stats')
     const enemy_elite = roll_enemy_elite()
     const enemy_level = Math.round(level)
     let enemy_health, enemy_damage, enemy_defense, enemy_attack_speed, enemy_coin_value, enemy_crit_chance, enemy_crit_damage;
@@ -218,7 +222,7 @@ function generate_enemy(level) {
 
     return enemy
 }
-function player_stats(weapon) {
+export function player_stats(weapon) {
     let Crit_chance = weapon.weapon_stats.Crit_chance
     let Crit_damage = weapon.weapon_stats.Crit_damage
     let Status_chance = weapon.weapon_stats.Status_chance
@@ -241,4 +245,3 @@ function player_stats(weapon) {
     }
     return player_stats
 }
-export default (roll_enemy_elite, getEnemyName, calculate_defense, calculate_crit, fighting, apply_status, generate_weapon, generate_enemy, player_stats) ;

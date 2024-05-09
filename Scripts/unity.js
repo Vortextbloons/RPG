@@ -1,4 +1,4 @@
-function random_part(object, c_value) {
+export function random_part(object, c_value) {
     const item_value = pick_Weighted_Item(Object.values(object))
     const index_value = item_value[c_value]
     const call_value = get_value_from_object(object, c_value, index_value)
@@ -43,11 +43,5 @@ function random_array(array) {
     return random_array
 }
 
-export default {
-    random_part,
-    pick_Weighted_Item,
-    get_value_from_object,
-    random_number,
-    random_array
-}
+
 

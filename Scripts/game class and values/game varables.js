@@ -45,5 +45,4 @@ export const enemy_mod = {
     Buff: new gameclass.EnemyMod('Buff', 5, { damage: 1.5, Crit_chance: 1.25, Crit_damage: 1.5, health: 2.5, defense: 2.5, coin_value: 5 }),
     Assassin: new gameclass.EnemyMod('Assassin', 3, { damage: 2, Crit_chance: 3, Crit_damage: 3, health: 2, defense: 2, coin_value: 7.5 }),
 };
-export default ( prefixes, weapon_name, ending, rare, Status, enemy_type, enemy_mod );
 

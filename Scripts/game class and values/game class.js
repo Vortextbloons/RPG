@@ -1,4 +1,4 @@
- class Prefix {
+export class Prefix {
     constructor(name, weight, element, stats) {
         this.name = name
         this.weight = weight
@@ -7,7 +7,7 @@
     }
 }
 
- class WeaponName {
+export class WeaponName {
     constructor(name, weight, stats) {
         this.name = name
         this.weight = weight
@@ -15,7 +15,7 @@
     }
 }
 
- class Ending {
+export class Ending {
     constructor(name, weight, stats) {
         this.name = name
         this.weight = weight
@@ -23,7 +23,7 @@
     }
 }
 
- class Rarity {
+export class Rarity {
     constructor(name, weight, stats) {
         this.name = name
         this.weight = weight
@@ -31,7 +31,7 @@
     }
 }
 
- class StatusEffect {
+export class StatusEffect {
     constructor(name, duration, description) {
         this.name = name
         this.duration = duration
@@ -39,7 +39,7 @@
     }
 }
 
- class BurningEffect extends StatusEffect {
+export class BurningEffect extends StatusEffect {
     constructor() {
         super('Burning', 3, 'Deals Damage Over TIme')
     }
@@ -48,22 +48,30 @@
     }
 }
 
- class Weapon {
+export class Weapon {
     constructor(prefix, name, ending, rarity) {
         this.prefix = prefix;
         this.name = name;
         this.ending = ending;
-        this.rarity = rare[rarity];
+        this.rarity = rarity;
 
         this.calculateStats();
     }
 
     calculateStats() {
-        // ... rest of the method
+           this.weapon_class_stats= {
+            damage: this.prefix.stats.damage + this.name.stats.damage + this.ending.stats.damage,
+            critChance: this.prefix.stats.Crit_chance + this.name.stats.Crit_chance + this.ending.stats.Crit_chance,
+            critDamage: this.prefix.stats.Crit_damage + this.name.stats.Crit_damage + this.ending.stats.Crit_damage,
+            attackSpeed: this.name.stats.attack_speed,
+            element: this.prefix.element,
+            Status_chance: this.name.stats.Status_chance
+        }
+        return this.weapon_class_stats
     }
 }
 
- class EnemyType {
+export class EnemyType {
     constructor(name, weight, stats) {
         this.name = name;
         this.weight = weight;
@@ -71,21 +79,10 @@
     }
 }
 
- class EnemyMod {
+export class EnemyMod {
     constructor(name, weight, stats) {
         this.name = name;
         this.weight = weight;
         this.stats = stats;
     }
-}
-export default {
-    Prefix,
-    WeaponName,
-    Ending,
-    Rarity,
-    StatusEffect,
-    BurningEffect,
-    Weapon,
-    EnemyType,
-    EnemyMod
 }
