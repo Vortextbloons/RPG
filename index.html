@@ -3,9 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <title>Line RPG</title>
 </head>
 <body>
+    <h1>Endless RPG</h1>
+    <header id="navbar">
+        <button id="home">Game</button>
+        <button id="about">About</button>
+
+    </header>
+    <main id="game_main">
+        <div id="game_div">
+            <div id="inventory">
+                <h2>Inventory</h2>
+                <ul id="inventory">
+                    <li id="gold_display"></li>
+                    <li id="player_stats_display">
+                        <ul id="player_stats">
+                            <li id="player_display_health">Health</li>
+                            <li id="player_display_defense"></li>
+                            <li id="player_display_damage"></li>
+                            <li id="player_display_crit_damage"></li>
+                            <li id="player_display_crit_chance"></li>
+                            <li id="player_display_attack_speed"></li>
+                            <li id="player_display_status_chance"></li>
+                            <li id="player_display_element"></li>
+                            
+                        </ul>
+                    </li>
+                    <li id="items_display">
+                        <ul id="items">
+                            <li id="sword_display"></li>
+                            
+                        </ul>
+                    </li>
+                </ul>
+                </ul>
+            </div>
+            <button id="generate_item">Generate Item</button>
+        </div>
+    </main>
     <script type="module" src="main.js"></script>
 </body>
 </html>

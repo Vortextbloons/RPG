@@ -1,6 +1,11 @@
 import { Weapon } from './game class and values/game class.js';
 import * as gamevaraibles from './game class and values/game varables.js'
 
+export function Sava_data(data_array){
+    const data = JSON.stringify(data_array)
+    localStorage.setItem('Gamedata', data)
+
+}
 
 import * as unity from "./unity.js"
 
@@ -168,11 +173,13 @@ export function generate_weapon() {
         Damage: (weapon.weapon_class_stats.damage * gamevaraibles.rare[rarity.call_value].stats.stat_muti).toFixed(2),
         Crit_chance: (weapon.weapon_class_stats.critChance * gamevaraibles.rare[rarity.call_value].stats.stat_muti).toFixed(2),
         Crit_damage: (weapon.weapon_class_stats.critDamage * gamevaraibles.rare[rarity.call_value].stats.stat_muti).toFixed(2),
-
         attack_speed: weapon.weapon_class_stats.attackSpeed,
         element: weapon.weapon_class_stats.element,
         Status_chance: (weapon.weapon_class_stats.Status_chance * gamevaraibles.rare[rarity.call_value].stats.stat_muti).toFixed(2),
     };
+    if (weaponStats.Crit_damage <= 1.1) {
+        weaponStats.Crit_damage = 1.1
+    }
 
     const weapon_info = {
         weapon_name: `${rarity.call_value} ${pre_fix.call_value} ${name.call_value} ${end.call_value}`,
@@ -245,3 +252,4 @@ export function player_stats(weapon) {
     }
     return player_stats
 }
+

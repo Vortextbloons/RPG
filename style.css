@@ -1,0 +1,35 @@
+body {
+    background: linear-gradient(to bottom, violet, lightblue);
+    height: 100vh;
+}
+
+li {
+    list-style-type: none;
+}
+
+#navbar {
+    display: flex;
+    background-color: transparent;
+}
+
+#navbar button {
+    background-color: rgba(1, 132, 255, 0.986);
+    color: white;
+}
+
+div #inventory {
+    float: right;
+    margin-right: 10px;
+    font-weight: bold;
+
+}
+#player_stats_display ul li{
+    text-align: center;
+}
+#player_stats_display ul li:hover {
+    background-color: white;
+    transform: scale(1.5);
+    color: gold;
+    font-weight: bold;
+    transition: transform .1s, background-color 1s, color 1s;
+}

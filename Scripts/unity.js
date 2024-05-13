@@ -42,6 +42,44 @@ function random_array(array) {
     console.log(index)
     return random_array
 }
-
+export function update_display(id, value, type="text") {
+    const element = document.getElementById(id)
+    if(type === "text"){
+        element.textContent = value
+    }
+    else if(type === "html"){
+        element.innerHTML = value
+    }
+    else{
+        console.error("Invalid type")
+    }
+}
+export function update_display_muti(id_arry, value_arry, type="text") {
+    if(id_arry.length !== value_arry.length){
+        console.error("Array length does not match")
+    }
+    else if(id_arry.length == 0 || value_arry.length == 0){
+        console.error("Array is empty")
+    }
+    else{
+        for(let i = 0; i < id_arry.length; i++){
+            const element = document.getElementById(id_arry[i])
+            if(type === "text"){
+                element.textContent = value_arry[i]
+            }
+            else if(type === "html"){
+                element.innerHTML = value_arry[i]
+            }
+            else{
+                console.error("Invalid type")
+            }
+        }
+    }
+    
+}
+export function add_event_listener(id, event, func){
+    const element = document.getElementById(id)
+    element.addEventListener(event, func)
+}
 
 
