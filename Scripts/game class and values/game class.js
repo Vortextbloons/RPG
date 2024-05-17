@@ -7,6 +7,45 @@ export class Prefix {
     }
 }
 
+
+const testweapon = {
+    
+weapon_name: 'Epic Blazing Astra_Blade OF_Stars', 
+weapon_stats: { 
+    damage: 160, 
+    Crit_damage: 1.6,
+     Crit_chance: 80, 
+     attack_speed: 0.85, 
+     Status_chance: 30, 
+     element: 'Fire' },
+    }
+
+
+export class Player {
+    
+    constructor(item) {
+        this.base_stats = {
+            health: 100,
+            defense: 0,
+        }
+        this.inventory = []
+    }
+    AddItem(item){
+        const item = item
+        
+        this.base_stats= {
+            
+        }
+
+    }
+    
+    }
+    addInventory(item) {
+        this.inventory.push(item)
+    }
+}
+
+
 export class WeaponName {
     constructor(name, weight, stats) {
         this.name = name
@@ -59,7 +98,7 @@ export class Weapon {
     }
 
     calculateStats() {
-           this.weapon_class_stats= {
+        this.weapon_class_stats = {
             damage: this.prefix.stats.damage + this.name.stats.damage + this.ending.stats.damage,
             critChance: this.prefix.stats.Crit_chance + this.name.stats.Crit_chance + this.ending.stats.Crit_chance,
             critDamage: this.prefix.stats.Crit_damage + this.name.stats.Crit_damage + this.ending.stats.Crit_damage,

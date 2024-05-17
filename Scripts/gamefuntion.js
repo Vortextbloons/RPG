@@ -116,7 +116,8 @@ export function fighting(player, enemy) {
 
         if (fightingEnemy.stats.health <= 0) {
             console.log(`You have defeated ${fightingEnemy.stats.name}!`);
-            console.log(`You've gained ${fightingEnemy.stats.gold} coins!`);
+            console.log(`You've gained ${fightingEnemy.stats.gold} coins!`)
+                                                                        ;
         } else {
             setTimeout(enemyAttack, fightingEnemy.attackSpeed);
         }

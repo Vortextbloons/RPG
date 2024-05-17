@@ -3,6 +3,9 @@ import { add_event_listener, update_display_muti, update_display } from './Scrip
 
 const foe = gamefuntion.generate_enemy(5)
 
+const weapon = gamefuntion.generate_weapon()
+
+const player_test = gamefuntion.player_stats(weapon)
 
 
 
