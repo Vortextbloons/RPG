@@ -20,31 +20,45 @@ weapon_stats: {
      element: 'Fire' },
     }
 
-
 export class Player {
-    
-    constructor(item) {
-        this.base_stats = {
-            health: 100,
-            defense: 0,
+      constructor(item = "None") {
+        this.gold = 0
+        this.stats = {
+            Health: 100,
+            Defense: 0,
+            Damage: 0,
+            Crit_Chance: 0,
+            Crit_Damage: 0,
+            AttackSpeed: 1,
+            Element: 'None',
         }
+        
         this.inventory = []
     }
-    AddItem(item){
-        const item = item
-        
-        this.base_stats= {
-            
+    AddItemStats(item) {
+        if (item === "None") {
+            console.error("No item to add");
+            return;
         }
-
-    }
-    
+        this.stats = {
+            Health: this.stats.Health + item.stats.Health,
+            Defense: this.stats.Defense + item.stats.Defense,
+            Damage: this.stats.Damage + item.stats.Damage,
+            Crit_Chance: this.stats.Crit_Chance + item.stats.Crit_Chance,
+            Crit_Damage: this.stats.Crit_Damage + item.stats.Crit_Damage,
+            AttackSpeed: this.stats.AttackSpeed + item.stats.AttackSpeed,
+            Element: this.stats.Element + item.stats.Element,
+        };
     }
     addInventory(item) {
+        if(item === "None"){
+            console.error("No item to add")
+            return
+        }
         this.inventory.push(item)
+        this.AddItemStats(item)
     }
 }
-
 
 export class WeaponName {
     constructor(name, weight, stats) {

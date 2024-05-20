@@ -1,7 +1,7 @@
 import { Weapon } from './game class and values/game class.js';
 import * as gamevaraibles from './game class and values/game varables.js'
 
-export function Sava_data(data_array){
+export function Sava_data(data_array) {
     const data = JSON.stringify(data_array)
     localStorage.setItem('Gamedata', data)
 
@@ -35,121 +35,118 @@ function calculate_defense(defense_value) {
     effectiveChance = (effectiveChance - 1) * -1
     return effectiveChance.toFixed(10);
 }
-function calculate_crit(Crit_chance, Crit_damage) {
+function calculate_crit(Crit_Chance, Crit_Damage) {
 
-    let cal_crit_tier = () => {
-        let crit_tier = 0
-        let isCrit = false
-        let combined_crit_damage = 1
-        if (Crit_chance <= 1) {
+    let cal_Crit_Tier = () => {
+        let Crit_Tier = 0
+        let IsCrit = false
+        let combined_Crit_Damage = 1
+        if (Crit_Chance <= 1) {
             let rad_number = Math.random()
 
-            if (rad_number < Crit_chance) {
-                isCrit = true
-                crit_tier = 1
-                combined_crit_damage = Crit_damage
+            if (rad_number < Crit_Chance) {
+                IsCrit = true
+                Crit_Tier = 1
+                combined_Crit_Damage = Crit_Damage
             }
             else {
-                isCrit = false
-                combined_crit_damage = 1
+                IsCrit = false
+                combined_Crit_Damage = 1
             }
         }
-        if (Crit_chance > 1) {
-            isCrit = true
-            let decimal = Crit_chance % 1
+        if (Crit_Chance > 1) {
+            IsCrit = true
+            let decimal = Crit_Chance % 1
             let rad_number = Math.random()
 
-            for (let c = 1; c <= Crit_chance; c++) {
-                crit_tier += 1
+            for (let c = 1; c <= Crit_Chance; c++) {
+                Crit_Tier += 1
             }
             if (decimal >= rad_number) {
-                crit_tier += 1
+                Crit_Tier += 1
             }
-            combined_crit_damage = crit_tier * Crit_damage
+            combined_Crit_Damage = Crit_Tier * Crit_Damage
         }
         const crit_info = {
-            isCrit: isCrit,
-            crit_tier: crit_tier,
-            final_crit_damage: combined_crit_damage
+            IsCrit: IsCrit,
+            Crit_Tier: Crit_Tier,
+            FInal_Crit_Damage: combined_Crit_Damage
         }
         return crit_info
     }
 
-    return cal_crit_tier()
+    return cal_Crit_Tier()
 }
 export function fighting(player, enemy) {
 
-    const fightingPlayer = {
+    const FightingPlayer = {
         stats: {
-            health: player.stats.health,
-            damage: player.stats.damage,
-            defense: player.stats.defense,
-            Crit_chance: player.stats.Crit_chance / 100,
-            Crit_damage: player.stats.Crit_damage,
-            attackSpeed: player.stats.attack_speed,
-            element: player.stats.element
+            Health: player.stats.Health,
+            Damage: player.stats.Damage,
+            Defense: player.stats.Defense,
+            Crit_Chance: player.stats.Crit_Chance / 100,
+            Crit_Damage: player.stats.Crit_Damage,
+            AttackSpeed: player.stats.AttackSpeed,
+            Element: player.stats.Element
         }
     };
 
-    const fightingEnemy = {
+    const FightingEnemy = {
         stats: {
-            health: enemy.stats.health,
-            damage: enemy.stats.damage,
-            defense: enemy.stats.defense,
-            Crit_chance: enemy.stats.Crit_chance / 100,
-            Crit_damage: enemy.stats.Crit_damage,
-            attackSpeed: enemy.stats.attack_speed,
-            gold: enemy.stats.coin_value,
-            name: enemy.enemy_name
+            Health: enemy.stats.Health,
+            Damage: enemy.stats.Damage,
+            Defense: enemy.stats.Defense,
+            Crit_Chance: enemy.stats.Crit_Chance / 100,
+            Crit_Damage: enemy.stats.Crit_Damage,
+            AttackSpeed: enemy.stats.AttackSpeed,
         }
     };
 
-    const playerAttack = () => {
+    const PlayerAttack = () => {
 
-        const playerCrit = calculate_crit(fightingPlayer.stats.Crit_chance, fightingPlayer.stats.Crit_damage);
-        let playerDamageDealt = fightingPlayer.stats.damage * playerCrit.final_crit_damage;
-        playerDamageDealt *= calculate_defense(fightingEnemy.stats.defense);
-        Math.round(playerDamageDealt)
-        fightingEnemy.stats.health -= Math.max(0, playerDamageDealt);
-        const isCrit = playerDamageDealt > player.stats.damage;
-        console.log(`You hit ${fightingEnemy.stats.name} for ${playerDamageDealt.toFixed(2)} damage ${isCrit ? `You did a Crit, Tier ${playerCrit.crit_tier}` : ''}. ${fightingEnemy.stats.name}'s health: ${fightingEnemy.stats.health.toFixed(2)}`);
+        const PlayerCrit = calculate_crit(FightingPlayer.stats.Crit_Chance, FightingPlayer.stats.Crit_Damage);
+        let PlayerDamageDealt = FightingPlayer.stats.Damage * PlayerCrit.FInal_Crit_Damage;
+        PlayerDamageDealt *= calculate_defense(FightingEnemy.stats.Defense);
+        Math.round(PlayerDamageDealt)
+        FightingEnemy.stats.Health -= Math.max(0, PlayerDamageDealt);
+        const IsCrit = PlayerDamageDealt > player.stats.Damage;
+        console.log(`You hit ${enemy.name} for ${PlayerDamageDealt} damage ${IsCrit ? `You did a Crit, Tier ${PlayerCrit.Crit_Tier}` : ''}. ${FightingEnemy.stats.name}'s health: ${FightingEnemy.stats.Health}`);
 
-        if (fightingEnemy.stats.health <= 0) {
-            console.log(`You have defeated ${fightingEnemy.stats.name}!`);
-            console.log(`You've gained ${fightingEnemy.stats.gold} coins!`)
-                                                                        ;
+        if (FightingEnemy.stats.health <= 0) {
+            console.log(`You have defeated ${FightingEnemy.stats.name}!`);
+            console.log(`You've gained ${FightingEnemy.stats.gold} coins!`)
+                ;
         } else {
-            setTimeout(enemyAttack, fightingEnemy.attackSpeed);
+            setTimeout(EnemyAttack, FightingEnemy.AttackSpeed);
         }
-    };
+    }
 
-    const enemyAttack = () => {
-        const enemyCrit = calculate_crit(fightingEnemy.stats.Crit_chance, fightingEnemy.stats.Crit_damage)
+    const EnemyAttack = () => {
+        const EnemyCrit = calculate_crit(FightingEnemy.stats.Crit_Chance, FightingEnemy.stats.Crit_Damage)
+        let EnemyDamageDealt = EnemyCrit.FInal_Crit_Damage * FightingEnemy.stats.Damage;
+        EnemyDamageDealt *= (calculate_defense(FightingPlayer.stats.Defense))
+        FightingPlayer.stats.Health -= Math.max(0, EnemyDamageDealt);
+        Math.round(EnemyDamageDealt)
+        const IsCrit = EnemyDamageDealt > FightingEnemy.stats.amage;
+        console.log(`${enemy.name} hits you for ${EnemyDamageDealt} damage ${IsCrit ? `Critical Hit! Tier ${EnemyCrit.Crit_Tier}` : ''}. Your health: ${FightingPlayer.stats.Health.toFixed(2)}`);
 
-        let enemyDamageDealt = enemyCrit.final_crit_damage * fightingEnemy.stats.damage;
-        enemyDamageDealt *= (calculate_defense(fightingPlayer.stats.defense))
-        fightingPlayer.stats.health -= Math.max(0, enemyDamageDealt);
-        Math.round(enemyDamageDealt)
-        const isCrit = enemyDamageDealt > fightingEnemy.stats.damage;
-        console.log(`${fightingEnemy.stats.name} hits you for ${enemyDamageDealt} damage ${isCrit ? `Critical Hit! Tier ${enemyCrit.crit_tier}` : ''}. Your health: ${fightingPlayer.stats.health.toFixed(2)}`);
-
-        if (fightingPlayer.stats.health <= 0) {
-            console.log(`${fightingEnemy.stats.name} has defeated you!`);
+        if (FightingPlayer.stats.Health <= 0) {en
+            console.log(`${FightingEnemy.stats.name} has defeated you!`);
         } else {
-            setTimeout(playerAttack, fightingPlayer.attackSpeed);
+            setTimeout(PlayerAttack, FightingPlayer.AttackSpeed);
         }
     };
 
-    if (fightingPlayer.stats.attackSpeed < fightingEnemy.statsattackSpeed) {
-        setTimeout(playerAttack, 0);
-    } else if (fightingPlayer.attackSpeed > fightingEnemy.attackSpeed) {
-        setTimeout(enemyAttack, 0);
+    if (FightingPlayer.stats.AttackSpeed < FightingEnemy.stats.AttackSpeed) {
+        setTimeout(PlayerAttack, 0);
+    } else if (FightingPlayer.AttackSpeed > FightingEnemy.stats.AttackSpeed) {
+        setTimeout(EnemyAttack, 0);
     } else {
         const index = Math.random();
         if (index <= 0.5) {
-            setTimeout(playerAttack, fightingPlayer.attackSpeed);
+            setTimeout(PlayerAttack, FightingPlayer.AttackSpeed);
         } else {
-            setTimeout(enemyAttack, fightingEnemy.attackSpeed);
+            setTimeout(EnemyAttack, FightingEnemy.AttackSpeed);
         }
     }
 }
@@ -171,20 +168,22 @@ export function generate_weapon() {
     const rarity = unity.random_part(gamevaraibles.rare, 'weight')
     const weapon = new Weapon(pre_fix.item_value, name.item_value, end.item_value, rarity.call_value)
     const weaponStats = {
+        Health: 0,
+        defense: 0,
         Damage: (weapon.weapon_class_stats.damage * gamevaraibles.rare[rarity.call_value].stats.stat_muti).toFixed(2),
-        Crit_chance: (weapon.weapon_class_stats.critChance * gamevaraibles.rare[rarity.call_value].stats.stat_muti).toFixed(2),
-        Crit_damage: (weapon.weapon_class_stats.critDamage * gamevaraibles.rare[rarity.call_value].stats.stat_muti).toFixed(2),
-        attack_speed: weapon.weapon_class_stats.attackSpeed,
-        element: weapon.weapon_class_stats.element,
+        Crit_Chance: (weapon.weapon_class_stats.critChance * gamevaraibles.rare[rarity.call_value].stats.stat_muti).toFixed(2),
+        Crit_Damage: (weapon.weapon_class_stats.critDamage * gamevaraibles.rare[rarity.call_value].stats.stat_muti).toFixed(2),
+        AttackSpeed: weapon.weapon_class_stats.AttackSpeed,
+        Element: weapon.weapon_class_stats.element,
         Status_chance: (weapon.weapon_class_stats.Status_chance * gamevaraibles.rare[rarity.call_value].stats.stat_muti).toFixed(2),
     };
-    if (weaponStats.Crit_damage <= 1.1) {
-        weaponStats.Crit_damage = 1.1
+    if (weaponStats.Crit_Damage <= 1.1) {
+        weaponStats.Crit_Damage = 1.1
     }
 
     const weapon_info = {
         weapon_name: `${rarity.call_value} ${pre_fix.call_value} ${name.call_value} ${end.call_value}`,
-        weapon_stats: weaponStats
+        stats: weaponStats
     }
 
     return weapon_info
@@ -193,64 +192,42 @@ export function generate_enemy(level) {
     const enemy_main = unity.random_part(gamevaraibles.enemy_type, 'stats')
     const enemy_elite = roll_enemy_elite()
     const enemy_level = Math.round(level)
-    let enemy_health, enemy_damage, enemy_defense, enemy_attack_speed, enemy_coin_value, enemy_crit_chance, enemy_crit_damage;
+    let enemy_health, enemy_damage, enemy_defense, enemy_AttackSpeed, enemy_coin_value, enemy_Crit_Chance, enemy_Crit_Damage;
 
     if (enemy_elite !== 'None') {
         enemy_health = Math.round((1.5 * enemy_level) * (enemy_main.item_value.stats.health * enemy_elite.item_value.stats.health))
         enemy_damage = Math.round((1 * enemy_level) * (enemy_main.item_value.stats.damage * enemy_elite.item_value.stats.damage))
         enemy_defense = Math.round((1 * enemy_level) * (enemy_main.item_value.stats.defense * enemy_elite.item_value.stats.defense))
-        enemy_attack_speed = enemy_main.item_value.stats.attack_speed
+        enemy_AttackSpeed = enemy_main.item_value.stats.AttackSpeed
         enemy_coin_value = Math.round((1 * enemy_level) * (enemy_main.item_value.stats.coin_value * enemy_elite.item_value.stats.coin_value))
-        enemy_crit_chance = (enemy_main.item_value.stats.Crit_chance * enemy_elite.item_value.stats.Crit_chance)
-        enemy_crit_damage = (enemy_main.item_value.stats.Crit_damage * enemy_elite.item_value.stats.Crit_damage)
+        enemy_Crit_Chance = (enemy_main.item_value.stats.Crit_Chance * enemy_elite.item_value.stats.Crit_Chance)
+        enemy_Crit_Damage = (enemy_main.item_value.stats.Crit_Damage * enemy_elite.item_value.stats.Crit_Damage)
     }
     else {
         enemy_health = Math.round((1.25 * enemy_level) * enemy_main.item_value.stats.health)
         enemy_damage = Math.round((.75 * enemy_level) * enemy_main.item_value.stats.damage)
         enemy_defense = Math.round((.5 * enemy_level) * enemy_main.item_value.stats.defense)
-        enemy_attack_speed = enemy_main.item_value.stats.attack_speed
+        enemy_AttackSpeed = enemy_main.item_value.stats.AttackSpeed
         enemy_coin_value = Math.round((1 * enemy_level) * enemy_main.item_value.stats.coin_value)
-        enemy_crit_chance = enemy_main.item_value.stats.Crit_chance
-        enemy_crit_damage = enemy_main.item_value.stats.Crit_damage
+        enemy_Crit_Chance = enemy_main.item_value.stats.Crit_Chance
+        enemy_Crit_Damage = enemy_main.item_value.stats.Crit_Damage
     }
     const enemy_name = `Level ${enemy_level} ${getEnemyName(enemy_main, enemy_elite)}`
     const enemy = {
-        enemy_name: enemy_name,
+        name: enemy_name,
         stats: {
-            level: enemy_level,
-            health: enemy_health,
-            damage: enemy_damage,
-            Crit_chance: enemy_crit_chance,
-            Crit_damage: enemy_crit_damage,
-            defense: enemy_defense,
-            attack_speed: enemy_attack_speed,
-            coin_value: enemy_coin_value
+            Level: enemy_level,
+            Health: enemy_health,
+            Damage: enemy_damage,
+            Crit_Chance: enemy_Crit_Chance,
+            Crit_Damage: enemy_Crit_Damage,
+            Defense: enemy_defense,
+            AttackSpeed: enemy_AttackSpeed,
+            Coin_value: enemy_coin_value
         }
     }
 
     return enemy
 }
-export function player_stats(weapon) {
-    let Crit_chance = weapon.weapon_stats.Crit_chance
-    let Crit_damage = weapon.weapon_stats.Crit_damage
-    let Status_chance = weapon.weapon_stats.Status_chance
-    let damage = weapon.weapon_stats.Damage
-    let element = weapon.weapon_stats.element
-    let attack_speed = weapon.weapon_stats.attack_speed
-    let health = 300
-    let defense = 0
-    const player_stats = {
-        stats: {
-            element: element,
-            damage: damage,
-            Crit_chance: Crit_chance,
-            Crit_damage: Crit_damage,
-            Status_chance: Status_chance,
-            attack_speed: attack_speed,
-            health: health,
-            defense: defense
-        }
-    }
-    return player_stats
-}
+
 
