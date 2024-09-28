@@ -110,12 +110,14 @@ export function fighting(player, enemy) {
         Math.round(PlayerDamageDealt)
         FightingEnemy.stats.Health -= Math.max(0, PlayerDamageDealt);
         const IsCrit = PlayerDamageDealt > player.stats.Damage;
-        console.log(`You hit ${enemy.name} for ${PlayerDamageDealt} damage ${IsCrit ? `You did a Crit, Tier ${PlayerCrit.Crit_Tier}` : ''}. ${FightingEnemy.stats.name}'s health: ${FightingEnemy.stats.Health}`);
+        const playerAttackMessage = `You hit ${enemy.name} for ${PlayerDamageDealt} damage ${IsCrit ? `You did a Crit, Tier ${PlayerCrit.Crit_Tier}` : ''}. ${FightingEnemy.stats.name}'s health: ${FightingEnemy.stats.Health}`;
+        console.log(playerAttackMessage);
+        updateBattleLog(playerAttackMessage);
 
         if (FightingEnemy.stats.health <= 0) {
-            console.log(`You have defeated ${FightingEnemy.stats.name}!`);
-            console.log(`You've gained ${FightingEnemy.stats.gold} coins!`)
-                ;
+            const victoryMessage = `You have defeated ${FightingEnemy.stats.name}! You've gained ${FightingEnemy.stats.gold} coins!`;
+            console.log(victoryMessage);
+            updateBattleLog(victoryMessage);
         } else {
             setTimeout(EnemyAttack, FightingEnemy.AttackSpeed);
         }
@@ -128,10 +130,14 @@ export function fighting(player, enemy) {
         FightingPlayer.stats.Health -= Math.max(0, EnemyDamageDealt);
         Math.round(EnemyDamageDealt)
         const IsCrit = EnemyDamageDealt > FightingEnemy.stats.amage;
-        console.log(`${enemy.name} hits you for ${EnemyDamageDealt} damage ${IsCrit ? `Critical Hit! Tier ${EnemyCrit.Crit_Tier}` : ''}. Your health: ${FightingPlayer.stats.Health.toFixed(2)}`);
+        const enemyAttackMessage = `${enemy.name} hits you for ${EnemyDamageDealt} damage ${IsCrit ? `Critical Hit! Tier ${EnemyCrit.Crit_Tier}` : ''}. Your health: ${FightingPlayer.stats.Health.toFixed(2)}`;
+        console.log(enemyAttackMessage);
+        updateBattleLog(enemyAttackMessage);
 
-        if (FightingPlayer.stats.Health <= 0) {en
-            console.log(`${FightingEnemy.stats.name} has defeated you!`);
+        if (FightingPlayer.stats.Health <= 0) {
+            const defeatMessage = `${FightingEnemy.stats.name} has defeated you!`;
+            console.log(defeatMessage);
+            updateBattleLog(defeatMessage);
         } else {
             setTimeout(PlayerAttack, FightingPlayer.AttackSpeed);
         }
@@ -230,4 +236,9 @@ export function generate_enemy(level) {
     return enemy
 }
 
-
+function updateBattleLog(message) {
+    const battleLog = document.getElementById('battle_log');
+    const newLogEntry = document.createElement('p');
+    newLogEntry.textContent = message;
+    battleLog.appendChild(newLogEntry);
+}

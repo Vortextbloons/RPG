@@ -7,6 +7,12 @@ const weapon = gamefuntion.generate_weapon()
 
 const Player_test = new Player
 
+function updateBattleLog(message) {
+  const battleLog = document.getElementById('battle_log');
+  const newLogEntry = document.createElement('p');
+  newLogEntry.textContent = message;
+  battleLog.appendChild(newLogEntry);
+}
 
 add_event_listener("generate_item", "click", () => {
   const weapon = gamefuntion.generate_weapon()
@@ -38,11 +44,9 @@ add_event_listener("generate_item", "click", () => {
   console.log(gamefuntion.fighting(Player_test, foe))
   console.log(Player_test)
   console.log(weapon)
- 
-  
 })
 
-
-
-
-
+add_event_listener("start_battle", "click", () => {
+  updateBattleLog("Battle started!");
+  gamefuntion.fighting(Player_test, foe);
+});
