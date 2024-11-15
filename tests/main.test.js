@@ -1,4 +1,4 @@
-import { Player, fighting, generate_weapon, generate_enemy } from '../main.js';
+import { Player, fighting, generate_weapon, generate_enemy, Item, updateDisplay } from '../main.js';
 
 describe('Player class', () => {
     test('should initialize with default values', () => {
@@ -135,5 +135,43 @@ describe('generate_enemy function', () => {
         expect(enemy.stats).toHaveProperty('Defense');
         expect(enemy.stats).toHaveProperty('AttackSpeed');
         expect(enemy.stats).toHaveProperty('Coin_value');
+    });
+});
+
+describe('Item class', () => {
+    test('should initialize with correct properties', () => {
+        const item = new Item('Test Item', 5, 'Fire', { damage: 10 });
+        expect(item.name).toBe('Test Item');
+        expect(item.weight).toBe(5);
+        expect(item.element).toBe('Fire');
+        expect(item.stats).toEqual({ damage: 10 });
+    });
+});
+
+describe('updateDisplay function', () => {
+    test('should update single element text content', () => {
+        document.body.innerHTML = '<div id="testElement"></div>';
+        updateDisplay('testElement', 'New Content');
+        expect(document.getElementById('testElement').textContent).toBe('New Content');
+    });
+
+    test('should update multiple elements text content', () => {
+        document.body.innerHTML = '<div id="testElement1"></div><div id="testElement2"></div>';
+        updateDisplay(['testElement1', 'testElement2'], ['Content 1', 'Content 2']);
+        expect(document.getElementById('testElement1').textContent).toBe('Content 1');
+        expect(document.getElementById('testElement2').textContent).toBe('Content 2');
+    });
+
+    test('should update single element HTML content', () => {
+        document.body.innerHTML = '<div id="testElement"></div>';
+        updateDisplay('testElement', '<span>New Content</span>', 'html');
+        expect(document.getElementById('testElement').innerHTML).toBe('<span>New Content</span>');
+    });
+
+    test('should update multiple elements HTML content', () => {
+        document.body.innerHTML = '<div id="testElement1"></div><div id="testElement2"></div>';
+        updateDisplay(['testElement1', 'testElement2'], ['<span>Content 1</span>', '<span>Content 2</span>'], 'html');
+        expect(document.getElementById('testElement1').innerHTML).toBe('<span>Content 1</span>');
+        expect(document.getElementById('testElement2').innerHTML).toBe('<span>Content 2</span>');
     });
 });
