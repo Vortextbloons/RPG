@@ -8,20 +8,9 @@ export class Prefix {
 }
 
 
-const testweapon = {
-    
-weapon_name: 'Epic Blazing Astra_Blade OF_Stars', 
-weapon_stats: { 
-    damage: 160, 
-    Crit_damage: 1.6,
-     Crit_chance: 80, 
-     attack_speed: 0.85, 
-     Status_chance: 30, 
-     element: 'Fire' },
-    }
 
 export class Player {
-      constructor(item = "None") {
+    constructor(item = "None") {
         this.gold = 0
         this.stats = {
             Health: 100,
@@ -32,7 +21,7 @@ export class Player {
             AttackSpeed: 1,
             Element: 'None',
         }
-        
+
         this.inventory = []
     }
     AddItemStats(item) {
@@ -51,7 +40,7 @@ export class Player {
         };
     }
     addInventory(item) {
-        if(item === "None"){
+        if (item === "None") {
             console.error("No item to add")
             return
         }
@@ -471,42 +460,42 @@ function random_array(array) {
     console.log(index)
     return random_array
 }
-export function update_display(id, value, type="text") {
+export function update_display(id, value, type = "text") {
     const element = document.getElementById(id)
-    if(type === "text"){
+    if (type === "text") {
         element.textContent = value
     }
-    else if(type === "html"){
+    else if (type === "html") {
         element.innerHTML = value
     }
-    else{
+    else {
         console.error("Invalid type")
     }
 }
-export function update_display_muti(id_arry, value_arry, type="text") {
-    if(id_arry.length !== value_arry.length){
+export function update_display_muti(id_arry, value_arry, type = "text") {
+    if (id_arry.length !== value_arry.length) {
         console.error("Array length does not match")
     }
-    else if(id_arry.length == 0 || value_arry.length == 0){
+    else if (id_arry.length == 0 || value_arry.length == 0) {
         console.error("Array is empty")
     }
-    else{
-        for(let i = 0; i < id_arry.length; i++){
+    else {
+        for (let i = 0; i < id_arry.length; i++) {
             const element = document.getElementById(id_arry[i])
-            if(type === "text"){
+            if (type === "text") {
                 element.textContent = value_arry[i]
             }
-            else if(type === "html"){
+            else if (type === "html") {
                 element.innerHTML = value_arry[i]
             }
-            else{
+            else {
                 console.error("Invalid type")
             }
         }
     }
-    
+
 }
-export function add_event_listener(id, event, func){
+export function add_event_listener(id, event, func) {
     const element = document.getElementById(id)
     element.addEventListener(event, func)
 }
@@ -518,38 +507,38 @@ const weapon = generate_weapon()
 const Player_test = new Player
 
 add_event_listener("generate_item", "click", () => {
-  const weapon = generate_weapon()
-  Player_test.addInventory(weapon)
-  console.log(Player_test)
-  let game_stats_ids = {
-    id_list: [
-      "player_display_health",
-      "player_display_defense",
-      "player_display_damage",
-      "player_display_crit_chance",
-      "player_display_crit_damage",
-      "player_display_attack_speed",
-      "player_display_status_chance",
-      "player_display_element",
-    ],
-    value_list: [
-      `Health: ${Player_test.stats.Health}`,
-      `Defense: ${Player_test.stats.Defense}`,
-      `Damage: ${Player_test.stats.Damage}`,
-      `Crit Chance: ${Player_test.stats.Crit_Chance}`,
-      `Crit Damage: ${Player_test.stats.Crit_Damage}`,
-      `Attack Speed: ${Player_test.stats.AttackSpeed}`,
-      `Status Chance: ${Player_test.stats.Status_chance}`,
-      `Element: ${Player_test.stats.Element}`
-    ]
-  }
-  update_display_muti(game_stats_ids.id_list, game_stats_ids.value_list)
-  console.log(fighting(Player_test, foe))
-  console.log(Player_test)
-  console.log(weapon)
+    const weapon = generate_weapon()
+    Player_test.addInventory(weapon)
+    console.log(Player_test)
+    let game_stats_ids = {
+        id_list: [
+            "player_display_health",
+            "player_display_defense",
+            "player_display_damage",
+            "player_display_crit_chance",
+            "player_display_crit_damage",
+            "player_display_attack_speed",
+            "player_display_status_chance",
+            "player_display_element",
+        ],
+        value_list: [
+            `Health: ${Player_test.stats.Health}`,
+            `Defense: ${Player_test.stats.Defense}`,
+            `Damage: ${Player_test.stats.Damage}`,
+            `Crit Chance: ${Player_test.stats.Crit_Chance}`,
+            `Crit Damage: ${Player_test.stats.Crit_Damage}`,
+            `Attack Speed: ${Player_test.stats.AttackSpeed}`,
+            `Status Chance: ${Player_test.stats.Status_chance}`,
+            `Element: ${Player_test.stats.Element}`
+        ]
+    }
+    update_display_muti(game_stats_ids.id_list, game_stats_ids.value_list)
+    console.log(fighting(Player_test, foe))
+    console.log(Player_test)
+    console.log(weapon)
 })
 
 add_event_listener("start_battle", "click", () => {
-  updateBattleLog("Battle started!");
-  fighting(Player_test, foe);
+    updateBattleLog("Battle started!");
+    fighting(Player_test, foe);
 });
