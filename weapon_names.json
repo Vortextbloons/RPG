@@ -1,0 +1,57 @@
+{
+  "Astra_Blade": {
+    "name": "Astra_Blade",
+    "weight": 5,
+    "stats": {
+      "damage": 15,
+      "Crit_damage": 0.75,
+      "Crit_chance": 15,
+      "attack_speed": 0.85,
+      "Status_chance": 5
+    }
+  },
+  "Expazt_Blade": {
+    "name": "Expazt_Blade",
+    "weight": 3,
+    "stats": {
+      "damage": 45,
+      "Crit_damage": 0.4,
+      "Crit_chance": 35,
+      "attack_speed": 1,
+      "Status_chance": 5
+    }
+  },
+  "Xata_Blade": {
+    "name": "Xata_Blade",
+    "weight": 5,
+    "stats": {
+      "damage": 20,
+      "Crit_damage": 0.35,
+      "Crit_chance": 25,
+      "attack_speed": 1.1,
+      "Status_chance": 5
+    }
+  },
+  "Uazt_Blade": {
+    "name": "Uazt_Blade",
+    "weight": 5,
+    "stats": {
+      "damage": 10,
+      "Crit_damage": 0.75,
+      "Crit_chance": 40,
+      "attack_speed": 1.15,
+      "Status_chance": 5
+    }
+  },
+  "Quick_Blade": {
+    "name": "Quick_Blade",
+    "weight": 5,
+    "stats": {
+      "damage": 10,
+      "Crit_damage": 0.3,
+      "Crit_chance": 30,
+      "attack_speed": 0.5,
+      "Status_chance": 15
+    }
+  }
+}
