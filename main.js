@@ -140,52 +140,31 @@ export class EnemyMod {
     }
 }
 
-export const prefixes = {
-    Blazing: new Prefix('Blazing', 5, 'Fire', { damage: 20, Crit_damage: 0.15, Crit_chance: 5, Status_chance: 5 }),
-    Frozen: new Prefix('Frozen', 5, 'Ice', { damage: 10, Crit_damage: 0.45, Crit_chance: 20, Status_chance: 5 }),
-    Terra: new Prefix('Terra', 5, 'Earth', { damage: 15, Crit_damage: 0.25, Crit_chance: 15, Status_chance: 5 }),
-    Shadow: new Prefix('Shadow', 3, 'Dark', { damage: 20, Crit_damage: .75, Crit_chance: 40, Status_chance: 10 })
-}
-export const weapon_name = {
-    Astra_Blade: new WeaponName('Astra_Blade', 5, { damage: 15, Crit_damage: 0.75, Crit_chance: 15, attack_speed: 0.85, Status_chance: 5 }),
-    Expazt_Blade: new WeaponName('Expazt_Blade', 3, { damage: 45, Crit_damage: 0.4, Crit_chance: 35, attack_speed: 1, Status_chance: 5 }),
-    Xata_Blade: new WeaponName('Xata_Blade', 5, { damage: 20, Crit_damage: 0.35, Crit_chance: 25, attack_speed: 1.1, Status_chance: 5 }),
-    Uazt_Blade: new WeaponName('Uazt_Blade', 5, { damage: 10, Crit_damage: 0.75, Crit_chance: 40, attack_speed: 1.15, Status_chance: 5 }),
-    Quick_Blade: new WeaponName('Quick_Blade', 5, { damage: 10, Crit_damage: .3, Crit_chance: 30, attack_speed: .5, Status_chance: 15 })
+export async function loadJSON(file) {
+    const response = await fetch(file);
+    const data = await response.json();
+    return data;
 }
 
-export const ending = {
-    Of_Might: new Ending('Of Might', 5, { damage: 50, Crit_damage: 0.2, Crit_chance: 15, Status_chance: 5 }),
-    Of_Shadow: new Ending('Of Shadow', 3, { damage: 25, Crit_damage: 0.85, Crit_chance: 15, Status_chance: 5 }),
-    Of_Reckoning: new Ending('Of Reckoning', 5, { damage: 25, Crit_damage: 0.35, Crit_chance: 20, Status_chance: 5 }),
-    Of_Strike: new Ending('Of Strike', 5, { damage: 30, Crit_damage: .2, Crit_chance: 25, Status_chance: 5 }),
-    OF_Stars: new Ending('Of Stars', 1, { damage: 80, Crit_damage: .8, Crit_chance: 40, Status_chance: 25 })
+export let prefixes = {};
+export let weapon_name = {};
+export let ending = {};
+export let rare = {};
+export let Status = [];
+export let enemy_type = {};
+export let enemy_mod = {};
+
+async function loadComponents() {
+    prefixes = await loadJSON('prefixes.json');
+    weapon_name = await loadJSON('weapon_names.json');
+    ending = await loadJSON('endings.json');
+    rare = await loadJSON('rarities.json');
+    Status = await loadJSON('status_effects.json');
+    enemy_type = await loadJSON('enemy_types.json');
+    enemy_mod = await loadJSON('enemy_mods.json');
 }
 
-export const rare = {
-    Common: new Rarity('Common', 50, { stat_muti: 1 }),
-    Uncomman: new Rarity('Uncomman', 35, { stat_muti: 1.25 }),
-    Rare: new Rarity('Rare', 20, { stat_muti: 1.5 }),
-    Epic: new Rarity('Epic', 10, { stat_muti: 2 }),
-    Legendary: new Rarity('Legendary', 3, { stat_muti: 3 }),
-    Mythic: new Rarity('Mythic', 1, { stat_muti: 4 }),
-
-}
-
-export const Status = [{ Burning: new BurningEffect() }]
-
-export const enemy_type = {
-    Goblin: new EnemyType('Goblin', 5, { damage: 7, Crit_chance: 10, Crit_damage: 1.25, health: 50, defense: 5, attack_speed: 1, coin_value: 7 }),
-    Skeleton: new EnemyType('Skeleton', 5, { damage: 15, Crit_chance: 25, Crit_damage: 1.5, health: 25, defense: 5, attack_speed: 0.8, coin_value: 7 }),
-    Spider: new EnemyType('Spider', 4, { damage: 12, Crit_chance: 15, Crit_damage: 1.35, health: 35, defense: 8, attack_speed: 1.1, coin_value: 7 }),
-    Titan: new EnemyType('Titan', 3, { damage: 10, Crit_chance: 15, Crit_damage: 1.75, health: 75, defense: 30, attack_speed: 1.5, coin_value: 15, }),
-};
-
-export const enemy_mod = {
-    Strong: new EnemyMod('Strong', 5, { damage: 2.125, Crit_chance: 1.75, Crit_damage: 1.5, health: 1.5, defense: 1.5, coin_value: 5 }),
-    Buff: new EnemyMod('Buff', 5, { damage: 1.5, Crit_chance: 1.25, Crit_damage: 1.5, health: 2.5, defense: 2.5, coin_value: 5 }),
-    Assassin: new EnemyMod('Assassin', 3, { damage: 2, Crit_chance: 3, Crit_damage: 3, health: 2, defense: 2, coin_value: 7.5 }),
-};
+loadComponents();
 
 export function Sava_data(data_array) {
     const data = JSON.stringify(data_array)

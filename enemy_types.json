@@ -1,0 +1,54 @@
+{
+  "Goblin": {
+    "name": "Goblin",
+    "weight": 5,
+    "stats": {
+      "damage": 7,
+      "Crit_chance": 10,
+      "Crit_damage": 1.25,
+      "health": 50,
+      "defense": 5,
+      "attack_speed": 1,
+      "coin_value": 7
+    }
+  },
+  "Skeleton": {
+    "name": "Skeleton",
+    "weight": 5,
+    "stats": {
+      "damage": 15,
+      "Crit_chance": 25,
+      "Crit_damage": 1.5,
+      "health": 25,
+      "defense": 5,
+      "attack_speed": 0.8,
+      "coin_value": 7
+    }
+  },
+  "Spider": {
+    "name": "Spider",
+    "weight": 4,
+    "stats": {
+      "damage": 12,
+      "Crit_chance": 15,
+      "Crit_damage": 1.35,
+      "health": 35,
+      "defense": 8,
+      "attack_speed": 1.1,
+      "coin_value": 7
+    }
+  },
+  "Titan": {
+    "name": "Titan",
+    "weight": 3,
+    "stats": {
+      "damage": 10,
+      "Crit_chance": 15,
+      "Crit_damage": 1.75,
+      "health": 75,
+      "defense": 30,
+      "attack_speed": 1.5,
+      "coin_value": 15
+    }
+  }
+}
