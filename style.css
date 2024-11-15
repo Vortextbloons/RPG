@@ -21,11 +21,12 @@ div #inventory {
     float: right;
     margin-right: 10px;
     font-weight: bold;
-
 }
-#player_stats_display ul li{
+
+#player_stats_display ul li {
     text-align: center;
 }
+
 #player_stats_display ul li:hover {
     background-color: white;
     transform: scale(1.5);

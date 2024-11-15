@@ -11,14 +11,13 @@
     <header id="navbar">
         <button id="home">Game</button>
         <button id="about">About</button>
-
     </header>
     <main id="game_main">
         <div id="game_div">
             <div id="inventory">
                 <h2>Inventory</h2>
                 <ul id="inventory">
-                    <li id="gold_display"></li>
+                    <li id="gold_display">Gold: 0</li>
                     <li id="player_stats_display">
                         <ul id="player_stats">
                             <li id="player_display_health">Health</li>
@@ -29,17 +28,15 @@
                             <li id="player_display_attack_speed"></li>
                             <li id="player_display_status_chance"></li>
                             <li id="player_display_element"></li>
-                            
                         </ul>
                     </li>
                     <li id="items_display">
                         <ul id="items">
                             <li id="sword_display"></li>
-                            
                         </ul>
                     </li>
                 </ul>
-                </ul>
+                <button id="open_inventory">Open Inventory</button>
             </div>
             <button id="generate_item">Generate Item</button>
             <div id="battle_log"></div>
