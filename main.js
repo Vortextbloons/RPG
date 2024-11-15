@@ -1,4 +1,4 @@
-export class Item {
+class Item {
     constructor(name, weight, element = null, stats = {}) {
         this.name = name;
         this.weight = weight;
@@ -25,11 +25,7 @@ export class Player {
         this.inventory = []
     }
 
-    AddItemStats(item) {
-        if (item === "None") {
-            console.error("No item to add");
-            return;
-        }
+    addItemStats(item) {
         this.stats = {
             Health: this.stats.Health + (item.stats.Health || 0),
             Defense: this.stats.Defense + (item.stats.Defense || 0),
@@ -47,17 +43,37 @@ export class Player {
             return
         }
         this.inventory.push(item);
-        this.AddItemStats(item);
+        this.addItemStats(item);
+    }
+
+    addGold(amount) {
+        this.gold += amount;
+        this.updateGoldDisplay();
+    }
+
+    deductGold(amount) {
+        if (this.gold >= amount) {
+            this.gold -= amount;
+            this.updateGoldDisplay();
+            return true;
+        } else {
+            console.error("Not enough gold");
+            return false;
+        }
+    }
+
+    updateGoldDisplay() {
+        const goldDisplay = document.getElementById('gold_display');
+        goldDisplay.textContent = `Gold: ${this.gold}`;
     }
 }
 
-export class Weapon {
+class Weapon {
     constructor(prefix, name, ending, rarity) {
         this.prefix = prefix;
         this.name = name;
         this.ending = ending;
         this.rarity = rarity;
-
         this.calculateStats();
     }
 
@@ -72,176 +88,72 @@ export class Weapon {
     }
 }
 
-export async function loadJSON(file) {
-    const response = await fetch(file);
-    const data = await response.json();
-    return data;
-}
-
-export let items = {};
-
-async function loadComponents() {
-    items = await loadJSON('items.json');
-}
-
-loadComponents();
-
-export function Sava_data(data_array) {
-    const data = JSON.stringify(data_array);
-    localStorage.setItem('Gamedata', data);
-}
-
-function roll_enemy_elite() {
-    const number = Math.random();
-    if (number > .9) {
-        return random_part(items.enemy_mods, 'stats');
-    } else {
-        return "None";
+const items = {
+    endings: {
+        Of_Might: { name: "Of Might", weight: 5, stats: { damage: 50, Crit_damage: 0.2, Crit_chance: 15, Status_chance: 5 } },
+        Of_Shadow: { name: "Of Shadow", weight: 3, stats: { damage: 25, Crit_damage: 0.85, Crit_chance: 15, Status_chance: 5 } },
+        Of_Reckoning: { name: "Of Reckoning", weight: 5, stats: { damage: 25, Crit_damage: 0.35, Crit_chance: 20, Status_chance: 5 } },
+        Of_Strike: { name: "Of Strike", weight: 5, stats: { damage: 30, Crit_damage: 0.2, Crit_chance: 25, Status_chance: 5 } },
+        OF_Stars: { name: "Of Stars", weight: 1, stats: { damage: 80, Crit_damage: 0.8, Crit_chance: 40, Status_chance: 25 } }
+    },
+    prefixes: {
+        Blazing: { name: "Blazing", weight: 5, element: "Fire", stats: { damage: 20, Crit_damage: 0.15, Crit_chance: 5, Status_chance: 5 } },
+        Frozen: { name: "Frozen", weight: 5, element: "Ice", stats: { damage: 10, Crit_damage: 0.45, Crit_chance: 20, Status_chance: 5 } },
+        Terra: { name: "Terra", weight: 5, element: "Earth", stats: { damage: 15, Crit_damage: 0.25, Crit_chance: 15, Status_chance: 5 } },
+        Shadow: { name: "Shadow", weight: 3, element: "Dark", stats: { damage: 20, Crit_damage: 0.75, Crit_chance: 40, Status_chance: 10 } }
+    },
+    rarities: {
+        Common: { name: "Common", weight: 50, stats: { stat_muti: 1 } },
+        Uncomman: { name: "Uncomman", weight: 35, stats: { stat_muti: 1.25 } },
+        Rare: { name: "Rare", weight: 20, stats: { stat_muti: 1.5 } },
+        Epic: { name: "Epic", weight: 10, stats: { stat_muti: 2 } },
+        Legendary: { name: "Legendary", weight: 3, stats: { stat_muti: 3 } },
+        Mythic: { name: "Mythic", weight: 1, stats: { stat_muti: 4 } }
+    },
+    weapon_names: {
+        Astra_Blade: { name: "Astra_Blade", weight: 5, stats: { damage: 15, Crit_damage: 0.75, Crit_chance: 15, attack_speed: 0.85, Status_chance: 5 } },
+        Expazt_Blade: { name: "Expazt_Blade", weight: 3, stats: { damage: 45, Crit_damage: 0.4, Crit_chance: 35, attack_speed: 1, Status_chance: 5 } },
+        Xata_Blade: { name: "Xata_Blade", weight: 5, stats: { damage: 20, Crit_damage: 0.35, Crit_chance: 25, attack_speed: 1.1, Status_chance: 5 } },
+        Uazt_Blade: { name: "Uazt_Blade", weight: 5, stats: { damage: 10, Crit_damage: 0.75, Crit_chance: 40, attack_speed: 1.15, Status_chance: 5 } },
+        Quick_Blade: { name: "Quick_Blade", weight: 5, stats: { damage: 10, Crit_damage: 0.3, Crit_chance: 30, attack_speed: 0.5, Status_chance: 15 } }
     }
+};
+
+function randomPart(object, c_value) {
+    const item_value = pickWeightedItem(Object.values(object));
+    const index_value = item_value[c_value];
+    const call_value = getValueFromObject(object, c_value, index_value);
+    return { item_value, call_value };
 }
 
-function getEnemyName(main_name, elite) {
-    if (elite === 'None') {
-        const name = main_name.call_value;
-        return name;
-    } else {
-        const name = `${elite.call_value} ${main_name.call_value}`;
-        return name;
+function pickWeightedItem(items) {
+    const totalWeight = items.reduce((sum, item) => sum + item.weight, 0);
+    const randomValue = Math.random() * totalWeight;
+    let currentWeight = 0;
+    for (const item of items) {
+        currentWeight += item.weight;
+        if (currentWeight >= randomValue) {
+            return item;
+        }
     }
+    return items[0];
 }
 
-function calculate_defense(defense_value) {
-    const baseChance = 0.005;
-    const hyperbolicFactor = 1 / (baseChance * defense_value + 1);
-    let effectiveChance = (1 - hyperbolicFactor) * 100;
-    effectiveChance /= 100;
-    effectiveChance = (effectiveChance - 1) * -1;
-    return effectiveChance.toFixed(10);
-}
-
-function calculate_crit(Crit_Chance, Crit_Damage) {
-    let cal_Crit_Tier = () => {
-        let Crit_Tier = 0;
-        let IsCrit = false;
-        let combined_Crit_Damage = 1;
-        if (Crit_Chance <= 1) {
-            let rad_number = Math.random();
-            if (rad_number < Crit_Chance) {
-                IsCrit = true;
-                Crit_Tier = 1;
-                combined_Crit_Damage = Crit_Damage;
-            } else {
-                IsCrit = false;
-                combined_Crit_Damage = 1;
+function getValueFromObject(object, property, value) {
+    for (let key in object) {
+        if (object.hasOwnProperty(key)) {
+            if (object[key][property] === value) {
+                return key;
             }
         }
-        if (Crit_Chance > 1) {
-            IsCrit = true;
-            let decimal = Crit_Chance % 1;
-            let rad_number = Math.random();
-            for (let c = 1; c <= Crit_Chance; c++) {
-                Crit_Tier += 1;
-            }
-            if (decimal >= rad_number) {
-                Crit_Tier += 1;
-            }
-            combined_Crit_Damage = Crit_Tier * Crit_Damage;
-        }
-        const crit_info = {
-            IsCrit: IsCrit,
-            Crit_Tier: Crit_Tier,
-            FInal_Crit_Damage: combined_Crit_Damage
-        };
-        return crit_info;
-    }
-    return cal_Crit_Tier();
-}
-
-export function fighting(player, enemy) {
-    const FightingPlayer = {
-        stats: {
-            Health: player.stats.Health,
-            Damage: player.stats.Damage,
-            Defense: player.stats.Defense,
-            Crit_Chance: player.stats.Crit_Chance / 100,
-            Crit_Damage: player.stats.Crit_Damage,
-            AttackSpeed: player.stats.AttackSpeed,
-            Element: player.stats.Element
-        }
-    };
-
-    const FightingEnemy = {
-        stats: {
-            Health: enemy.stats.Health,
-            Damage: enemy.stats.Damage,
-            Defense: enemy.stats.Defense,
-            Crit_Chance: enemy.stats.Crit_Chance / 100,
-            Crit_Damage: enemy.stats.Crit_Damage,
-            AttackSpeed: enemy.stats.AttackSpeed,
-        }
-    };
-
-    const attack = (attacker, defender, attackerName, defenderName) => {
-        const Crit = calculate_crit(attacker.stats.Crit_Chance, attacker.stats.Crit_Damage);
-        let DamageDealt = attacker.stats.Damage * Crit.FInal_Crit_Damage;
-        DamageDealt *= calculate_defense(defender.stats.Defense);
-        Math.round(DamageDealt);
-        defender.stats.Health -= Math.max(0, DamageDealt);
-        const IsCrit = DamageDealt > attacker.stats.Damage;
-        const attackMessage = `${attackerName} hits ${defenderName} for ${DamageDealt} damage ${IsCrit ? `Critical Hit! Tier ${Crit.Crit_Tier}` : ''}. ${defenderName}'s health: ${defender.stats.Health.toFixed(2)}`;
-        console.log(attackMessage);
-        updateBattleLog(attackMessage);
-
-        if (defender.stats.Health <= 0) {
-            const victoryMessage = `${attackerName} has defeated ${defenderName}!`;
-            console.log(victoryMessage);
-            updateBattleLog(victoryMessage);
-            return true;
-        }
-        return false;
-    };
-
-    const PlayerAttack = () => {
-        if (!attack(FightingPlayer, FightingEnemy, 'You', enemy.name)) {
-            setTimeout(EnemyAttack, FightingEnemy.stats.AttackSpeed);
-        }
-    };
-
-    const EnemyAttack = () => {
-        if (!attack(FightingEnemy, FightingPlayer, enemy.name, 'You')) {
-            setTimeout(PlayerAttack, FightingPlayer.stats.AttackSpeed);
-        }
-    };
-
-    if (FightingPlayer.stats.AttackSpeed < FightingEnemy.stats.AttackSpeed) {
-        setTimeout(PlayerAttack, 0);
-    } else if (FightingPlayer.stats.AttackSpeed > FightingEnemy.stats.AttackSpeed) {
-        setTimeout(EnemyAttack, 0);
-    } else {
-        const index = Math.random();
-        if (index <= 0.5) {
-            setTimeout(PlayerAttack, FightingPlayer.stats.AttackSpeed);
-        } else {
-            setTimeout(EnemyAttack, FightingEnemy.stats.AttackSpeed);
-        }
     }
 }
 
-function apply_status(target, attacker) {
-    let element = '';
-    if (attacker.stats.element === 'Fire') {
-        element = items.status_effects[0];
-        element.Burning.apply(target, attacker);
-    } else {
-        return `You Have Applied No Status`;
-    }
-}
-
-export function generate_weapon() {
-    const pre_fix = random_part(items.prefixes, 'stats');
-    const name = random_part(items.weapon_names, 'stats');
-    const end = random_part(items.endings, 'stats');
-    const rarity = random_part(items.rarities, 'weight');
+function generateWeapon() {
+    const pre_fix = randomPart(items.prefixes, 'stats');
+    const name = randomPart(items.weapon_names, 'stats');
+    const end = randomPart(items.endings, 'stats');
+    const rarity = randomPart(items.rarities, 'weight');
     const weapon = new Weapon(pre_fix.item_value, name.item_value, end.item_value, rarity.call_value);
     const weaponStats = {
         Health: 0,
@@ -257,12 +169,11 @@ export function generate_weapon() {
         weaponStats.Crit_Damage = 1.1;
     }
 
-    const weapon_info = {
+    return {
         weapon_name: `${rarity.call_value} ${pre_fix.call_value} ${name.call_value} ${end.call_value}`,
-        stats: weaponStats
+        stats: weaponStats,
+        cost: Math.round(weaponStats.Damage * 10)
     };
-
-    return weapon_info;
 }
 
 export function generate_enemy(level) {
@@ -398,10 +309,7 @@ export function add_event_listener(id, event, func) {
 }
 
 
-
-const foe = generate_enemy(5);
-const weapon = generate_weapon();
-const Player_test = new Player();
+const player = new Player();
 
 add_event_listener("generate_item", "click", () => {
     const weapon = generate_weapon()
@@ -435,7 +343,12 @@ add_event_listener("generate_item", "click", () => {
     console.log(weapon)
 })
 
-add_event_listener("start_battle", "click", () => {
-    updateBattleLog("Battle started!");
-    fighting(Player_test, foe);
+addEventListener("open_inventory", "click", () => {
+    const inventoryDisplay = document.getElementById('items_display');
+    inventoryDisplay.innerHTML = '';
+    player.inventory.forEach((item, index) => {
+        const itemElement = document.createElement('li');
+        itemElement.textContent = `${index + 1}. ${item.weapon_name}`;
+        inventoryDisplay.appendChild(itemElement);
+    });
 });
