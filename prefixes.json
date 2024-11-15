@@ -1,0 +1,46 @@
+{
+  "Blazing": {
+    "name": "Blazing",
+    "weight": 5,
+    "element": "Fire",
+    "stats": {
+      "damage": 20,
+      "Crit_damage": 0.15,
+      "Crit_chance": 5,
+      "Status_chance": 5
+    }
+  },
+  "Frozen": {
+    "name": "Frozen",
+    "weight": 5,
+    "element": "Ice",
+    "stats": {
+      "damage": 10,
+      "Crit_damage": 0.45,
+      "Crit_chance": 20,
+      "Status_chance": 5
+    }
+  },
+  "Terra": {
+    "name": "Terra",
+    "weight": 5,
+    "element": "Earth",
+    "stats": {
+      "damage": 15,
+      "Crit_damage": 0.25,
+      "Crit_chance": 15,
+      "Status_chance": 5
+    }
+  },
+  "Shadow": {
+    "name": "Shadow",
+    "weight": 3,
+    "element": "Dark",
+    "stats": {
+      "damage": 20,
+      "Crit_damage": 0.75,
+      "Crit_chance": 40,
+      "Status_chance": 10
+    }
+  }
+}
