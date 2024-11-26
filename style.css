@@ -1,7 +1,4 @@
-body {
-    background: linear-gradient(to bottom, violet, lightblue);
-    height: 100vh;
-}
+
 
 li {
     list-style-type: none;
@@ -25,14 +22,6 @@ div #inventory {
 
 #player_stats_display ul li {
     text-align: center;
-}
-
-#player_stats_display ul li:hover {
-    background-color: white;
-    transform: scale(1.5);
-    color: gold;
-    font-weight: bold;
-    transition: transform .1s, background-color 1s, color 1s;
 }
 
 #battle_log {
