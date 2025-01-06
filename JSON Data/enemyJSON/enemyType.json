@@ -1,0 +1,43 @@
+{
+    "enemyTypes": {
+        "Skeleton": {
+            "name": "Skeleton",
+            "weight": 5,
+            "stats": { 
+                "health": 80,
+                "defense": 10,
+                "damage": 50,
+                "critDamage": 1.5,
+                "critChance": 25,
+                "attackSpeed": 0.95,
+                "coinValue": 10
+            }
+        },
+        "Zombie": {
+            "name": "Zombie",
+            "weight": 5,
+            "stats": { 
+                "health": 150,
+                "defense": 15,
+                "damage": 30,
+                "critDamage": 1.3,
+                "critChance": 25,
+                "attackSpeed": 1.45,
+                "coinValue": 10
+            }
+        },
+        "Spider": {
+            "name": "Spider",
+            "weight": 5,
+            "stats": { 
+                "health": 100,
+                "defense": 15,
+                "damage": 60,
+                "critDamage": 1.3,
+                "critChance": 35,
+                "attackSpeed": 1,
+                "coinValue": 10
+            }
+        }
+    }
+}

@@ -44,19 +44,6 @@ export function add_event_listener(id, event, func) {
     element.addEventListener(event, func)
 }
 
-export function pick_Weighted_Item(items) {
-    const totalWeight = items.reduce((sum, item) => sum + item.weight, 0);
-    const randomValue = Math.random() * totalWeight;
-    let currentWeight = 0;
-    for (const item of items) {
-        currentWeight += item.weight;
-        if (currentWeight >= randomValue) {
-            return item;
-        }
-    }
-    return items[0];
-}
-
 export function get_value_from_object(object, property, value) {
     for (let key in object) {
         if (object.hasOwnProperty(key)) {
@@ -71,10 +58,10 @@ export function random_number(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-export function randomPart(object, c_value) {
+export function randomPart(object, callValue) {
     const item_value = pickWeightedItem(Object.values(object));
-    const index_value = item_value[c_value];
-    const call_value = getValueFromObject(object, c_value, index_value);
+    const index_value = item_value[callValue];
+    const call_value = getValueFromObject(object, callValue, index_value);
     return { item_value, call_value };
 }
 

@@ -1,0 +1,75 @@
+{
+    "endings": {
+        "Of_Might": {
+            "name": "Of Might",
+            "weight": 8,
+            "stats": {
+                "damage": 50,
+                "Crit_damage": 0.2,
+                "Crit_chance": 5,
+                "Status_chance": 5
+            }
+        },
+        "Of_Shadow": {
+            "name": "Of Shadow", 
+            "weight": 4,
+            "stats": {
+                "damage": 30,
+                "Crit_damage": 0.45,
+                "Crit_chance": 10,
+                "Status_chance": 5
+            }
+        },
+        
+        "Of_Reckoning": {
+            "name": "Of Reckoning",
+            "weight": 4, 
+            "stats": {
+                "damage": 45,
+                "Crit_damage": 0.3,
+                "Crit_chance": 15,
+                "Status_chance": 5
+            }
+        },
+        "Of_Strike": {
+            "name": "Of Strike",
+            "weight": 8,
+            "stats": {
+                "damage": 30,
+                "Crit_damage": 0.25,
+                "Crit_chance": 5,
+                "Status_chance": 5
+            }
+        },
+        "Of_The_End": {
+            "name": "Of The End",
+            "weight": 4,
+            "stats": {
+                "damage": 110,
+                "Crit_damage": 0,
+                "Crit_chance": 0,
+                "Status_chance": 5
+            }
+        },
+        "OF_Stars": {
+            "name": "Of Stars",
+            "weight": 1,
+            "stats": {
+                "damage": 135,
+                "Crit_damage": 0.4,
+                "Crit_chance": 25,
+                "Status_chance": 35
+            }
+        },
+        "Of_Void": {
+            "name": "Of Void",
+            "weight": 1,
+            "stats": {
+                "damage": 65,
+                "Crit_damage": 0.8,
+                "Crit_chance": 50,
+                "Status_chance": 0
+            }
+        }
+    }
+}

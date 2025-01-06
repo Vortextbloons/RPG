@@ -2,44 +2,44 @@
     "rarities": {
         "Common": {
             "name": "Common",
-            "weight": 50,
+            "weight": 55,
             "stats": {
                 "stat_muti": 1
             }
         },
         "Uncomman": {
             "name": "Uncomman",
-            "weight": 35,
+            "weight": 30,
             "stats": {
                 "stat_muti": 1.25
             }
         },
         "Rare": {
             "name": "Rare",
-            "weight": 20,
+            "weight": 25,
             "stats": {
-                "stat_muti": 1.4
+                "stat_muti": 1.5
             }
         },
         "Epic": {
             "name": "Epic",
-            "weight": 10,
+            "weight": 5,
             "stats": {
-                "stat_muti": 1.75
+                "stat_muti": 1.85
             }
         },
         "Legendary": {
             "name": "Legendary",
             "weight": 3,
             "stats": {
-                "stat_muti": 2.5
+                "stat_muti": 2.75
             }
         },
         "Mythic": {
             "name": "Mythic",
             "weight": 1,
             "stats": {
-                "stat_muti": 3.75
+                "stat_muti": 4
             }
         }
     }
