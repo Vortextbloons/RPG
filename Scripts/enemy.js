@@ -9,8 +9,8 @@ const enemyElite = async () => {
 }
 console.log(enemyTypes())
 export class enemy {
-    rollEnemy(){
-        const enemy = pickWeightedItem(enemyTypes())
+    async rollEnemy(){
+        const enemy = pickWeightedItem(await (await enemyTypes()).json())
         return enemy
     }
     
@@ -32,7 +32,7 @@ export class enemy {
         this.calculateLevel(this.level);
     }
 
-    rollElite() {
+    async rollElite() {
         const randomNum = Math.random()
         let elite = false
         if(randomNum > .85){
@@ -42,7 +42,7 @@ export class enemy {
             elite = false
         }
         if(elite == true){
-            let elite = pickWeightedItem(enemyElite())
+            let elite = pickWeightedItem(await (await enemyElite()).json())
             this.stats.health += elite.stats.health
             this.stats.defense += elite.stats.defense
             this.stats.damage += elite.stats.damage

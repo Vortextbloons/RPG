@@ -66,6 +66,9 @@ export function randomPart(object, callValue) {
 }
 
 export function pickWeightedItem(items) {
+    if (!Array.isArray(items)) {
+        throw new TypeError("Expected an array of items");
+    }
     const totalWeight = items.reduce((sum, item) => sum + item.weight, 0);
     const randomValue = Math.random() * totalWeight;
     let currentWeight = 0;
