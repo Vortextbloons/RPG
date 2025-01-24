@@ -3,48 +3,49 @@
         "Fortified": {
             "name": "Fortified",
             "weight": 5,
+            "colorValue": "rgb(139, 69, 19)",
             "stats": {
                 "health": 125,
                 "defense": 45,
                 "damage": 30,
-                "Crit_damage": 1.25,
-                "Crit_chance": 15
+                "critDamage": 1.05,
+                "critChance": 15
             }
         },
         "Strong": {
             "name": "Strong",
             "weight": 5,
+            "colorValue": "rgb(178, 34, 34)",
             "stats": {
                 "health": 50,
                 "defense": 10,
                 "damage": 100,
-                "Crit_damage": 1.3,
-                "Crit_chance": 20
-                
+                "critDamage": 1.1,
+                "critChance": 20
             }
         },
         "Critical": {
             "name": "Critical",
             "weight": 3,
+            "colorValue": "rgb(255, 69, 0)",
             "stats": {
                 "health": 80,
                 "defense": 15,
                 "damage": 90,
-                "Crit_damage": 1.5,
-                "Crit_chance": 30
-               
+                "critDamage": 1.2,
+                "critChance": 30
             }
         },
         "Quick": {
             "name": "Quick",
             "weight": 5,
+            "colorValue": "rgb(100, 149, 237)",
             "stats": {
                 "health": 40,
                 "defense": 15,
                 "damage": 30,
-                "Crit_damage": 1.2,
-                "Crit_chance": 15
-                
+                "critDamage": 1.03,
+                "critChance": 15
             }
         }
     }

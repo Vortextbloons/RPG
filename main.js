@@ -1,21 +1,63 @@
-import { randomPart, add_event_listener, } from "./Scripts/Util.js";
-import { average_stats } from  "./Scripts/testLogic.js"
-import { generateWeapon, } from "./Scripts/itemHandling.js";
+import { addEventListener } from "./Scripts/Util.js";
+import { generateWeapon } from "./Scripts/itemHandling.js";
 import { player } from "./Scripts/player.js";
 import { enemy } from "./Scripts/enemy.js";
-
-console.log("Main loaded");
-const Enemy = new enemy(4);
-console.log(Enemy)
+import { battle } from "./Scripts/fightingLogic.js";
+import { updateGoldDisplay, updateBattleLog, displayStats, initializeModalHandlers, openStatsModal } from "./Scripts/displayScripts.js";
 
 const Player = new player();
-function handleItemAdding (item){
-    
-    Player.addInventory(item)
-    
+Player.gold = 300
+const WEAPON_COST = 50;
+
+function tryGenerateWeapon() {
+    if (Player.gold >= WEAPON_COST) {
+        const newWeapon = generateWeapon();
+        if (Player.addInventory(newWeapon)) {
+            Player.gold -= WEAPON_COST;
+            updateGoldDisplay(Player.gold);
+            updateBattleLog(`Generated weapon: ${newWeapon.weaponName}`);
+            displayStats(Player);
+        } else {
+            updateBattleLog('Inventory is full!', 'death');
+        }
+    } else {
+        updateBattleLog(`Not enough gold! Need ${WEAPON_COST} gold.`, 'death');
+    }
 }
-console.log(average_stats(10000))
-handleItemAdding(generateWeapon())
-console.log(Player)
-console.log(Player.inventory[0])
+
+// Add global functions for HTML onclick events
+window.equipItem = (index) => {
+    Player.equipItem(index);
+    displayStats(Player);
+};
+
+window.unequipItem = () => {
+    if (!Player.unequipItem()) {
+        updateBattleLog('Inventory is full!', 'death');
+    }
+    displayStats(Player);
+};
+
+window.removeItem = (index) => {
+    Player.removeItem(index);
+    displayStats(Player);
+};
+
+addEventListener('generate-weapon', 'click', tryGenerateWeapon);
+addEventListener('battle', 'click', () => {
+    const Enemy = new enemy(1);
+    console.log(Enemy);
+    battle(Player, Enemy);
+    updateGoldDisplay(Player.gold);
+});
+
+addEventListener('show-stats', 'click', () => {
+    displayStats(Player);
+    openStatsModal();
+});
+
+initializeModalHandlers();
+updateGoldDisplay(Player.gold);
+
+
 

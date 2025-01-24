@@ -1,68 +1,75 @@
 {
     "weapon_names": {
-        "Astra_Blade": {
+        "Astra Blade": {
             "name": "Astra_Blade",
             "weight": 2,
+            "colorValue": "silver",
             "stats": {
                 "damage": 30,
-                "Crit_damage": 0.35,
-                "Crit_chance": 20,
-                "attack_speed": 0.85,
+                "critDamage": 0.35,
+                "critChance": 20,
+                "attackSpeed": 0.85,
                 "Status_chance": 5
             }
+        
         },
-        "Expazt_Blade": {
+        "Expazt Blade": {
             "name": "Expazt_Blade",
             "weight": 8,
+            "colorValue": "darkgray",
             "stats": {
                 "damage": 50,
-                "Crit_damage": 0.2,
-                "Crit_chance": 5,
-                "attack_speed": 1,
+                "critDamage": 0.2,
+                "critChance": 5,
+                "attackSpeed": 1,
                 "Status_chance": 5
             }
         },
-        "Xata_Blade": {
+        "Xata Blade": {
             "name": "Xata_Blade",
             "weight": 5,
+            "colorValue": "rgb(180, 180, 220)",
             "stats": {
                 "damage": 30,
-                "Crit_damage": 0.3,
-                "Crit_chance": 10,
-                "attack_speed": 1.1,
+                "critDamage": 0.3,
+                "critChance": 10,
+                "attackSpeed": 1.1,
                 "Status_chance": 5
             }
         },
-        "Uazt_Blade": {
+        "Uazt Blade": {
             "name": "Uazt_Blade",
             "weight": 6,
+            "colorValue": "rgb(200, 180, 160)",
             "stats": {
                 "damage": 30,
-                "Crit_damage": 0.3,
-                "Crit_chance": 5,
-                "attack_speed": 1.15,
+                "critDamage": 0.3,
+                "critChance": 5,
+                "attackSpeed": 1.15,
                 "Status_chance": 5
             }
         },
-        "Quick_Blade": {
+        "Quick Blade": {
             "name": "Quick_Blade",
             "weight": 8,
+            "colorValue": "lightblue",
             "stats": {
                 "damage": 20,
-                "Crit_damage": 0.3,
-                "Crit_chance": 10,
-                "attack_speed": 0.5,
+                "critDamage": 0.3,
+                "critChance": 10,
+                "attackSpeed": 0.5,
                 "Status_chance": 5
             }
         },
-        "Titan_Blade": {
+        "Titan Blade": {
             "name": "TIitan_Blade",
             "weight": 1,
+            "colorValue": "gold",
             "stats": {
                 "damage": 150,
-                "Crit_damage": 0.3,
-                "Crit_chance": 10,
-                "attack_speed": 1.5,
+                "critDamage": 0.3,
+                "critChance": 10,
+                "attackSpeed": 1.5,
                 "Status_chance": 5
             }
         }

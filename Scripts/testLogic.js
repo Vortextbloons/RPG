@@ -1,7 +1,8 @@
 import { generateWeapon } from "./itemHandling.js";
+import { enemy } from "./enemy.js";
 // Generates lots of weapons and returns the average stats 
 
-export function average_stats(numberOfWeapons) {
+export function averageGearStats (numberOfWeapons) {
     const weaponList = []
     for (let i = 0; i < numberOfWeapons; i++) {
         const weapon = generateWeapon();
@@ -26,4 +27,24 @@ export function average_stats(numberOfWeapons) {
     }
     console.log(weaponList)
     return averageWeaponStats
+}
+
+export function averageEnemyStats(numberOfEnemies, level) {
+    const enemyList = [];
+    for (let i = 0; i < numberOfEnemies; i++) {
+        const temptEnemy = new enemy(level);
+        enemyList.push(temptEnemy);
+    }
+    const averageEnemyStats = {
+        averageHealth: (enemyList.reduce((p, c) => p + c.stats.health, 0) / enemyList.length).toFixed(2),
+        averageDefense: (enemyList.reduce((p, c) => p + c.stats.defense, 0) / enemyList.length).toFixed(2),
+        averageDamage: (enemyList.reduce((p, c) => p + c.stats.damage, 0) / enemyList.length).toFixed(2),
+        averageCritChance: (enemyList.reduce((p, c) => p + c.stats.critChance, 0) / enemyList.length).toFixed(2),
+        averageCritDamage: (enemyList.reduce((p, c) => p + c.stats.critDamage, 0) / enemyList.length).toFixed(2),
+        averaecoineValue: (enemyList.reduce((p, c) => p + c.coinValue, 0) / enemyList.length).toFixed(2),
+        averagePercentElite: (enemyList.filter(e => e.isElite).length / enemyList.length).toFixed(2),
+        enemyLevel: level,
+
+    };
+    return averageEnemyStats;
 }

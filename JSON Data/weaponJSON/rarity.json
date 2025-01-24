@@ -3,43 +3,49 @@
         "Common": {
             "name": "Common",
             "weight": 55,
+            "colorValue": "white",
             "stats": {
-                "stat_muti": 1
+                "statMuti": 1
             }
         },
         "Uncomman": {
             "name": "Uncomman",
             "weight": 30,
+            "colorValue": "rgb(0, 255, 0)",
             "stats": {
-                "stat_muti": 1.25
+                "statMuti": 1.25
             }
         },
         "Rare": {
             "name": "Rare",
             "weight": 25,
+            "colorValue": "blue",
             "stats": {
-                "stat_muti": 1.5
+                "statMuti": 1.5
             }
         },
         "Epic": {
             "name": "Epic",
             "weight": 5,
+            "colorValue": "purple",
             "stats": {
-                "stat_muti": 1.85
+                "statMuti": 1.85
             }
         },
         "Legendary": {
             "name": "Legendary",
             "weight": 3,
+            "colorValue": "orange",
             "stats": {
-                "stat_muti": 2.75
+                "statMuti": 2.75
             }
         },
         "Mythic": {
             "name": "Mythic",
             "weight": 1,
+            "colorValue": "rgb(255, 0, 255)",
             "stats": {
-                "stat_muti": 4
+                "statMuti": 4
             }
         }
     }

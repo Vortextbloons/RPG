@@ -1,63 +1,47 @@
-import { pickWeightedItem } from "./Util.js";
-const enemyTypes  = async () => {
-    const response = await fetch("/RPG/JSON Data/enemyJSON/enemyType.json")
-    return response
+import { randomPart, pickWeightedItem} from "./Util.js";
+const getEliteData = async () => {
+    const response = await fetch("./JSON Data/enemyJSON/enemyElite.json");
+    const data = await response.json();
+    return data.enemyElite;
 }
-const enemyElite = async () => {
-    const enemyElite = await fetch("/RPG/JSON Data/enemyJSON/enemyElite.json")
-    return enemyElite
+const getEnemyData = async () => {
+    const response = await fetch("./JSON Data/enemyJSON/enemyType.json");
+    const data = await response.json();
+    return data.enemyTypes;
 }
-console.log(enemyTypes())
+
+const enemyTypeData = await getEnemyData();
+
+const eliteData = await getEliteData();
+
 export class enemy {
-    async rollEnemy(){
-        const enemy = pickWeightedItem(await (await enemyTypes()).json())
-        return enemy
-    }
-    
     constructor(level = 1) {
-        this.enemy = this.rollEnemy()
+        this.level = Number(level);
+        this.enemyType = randomPart(enemyTypeData, 'stats').item_value
+        this.eliteType = randomPart(eliteData, 'stats').item_value;
+        this.name = this.enemyType.name;
         this.stats = {
-            health: this.enemy.stats.health,
-            defense: this.enemy.stats.defense,
-            damage: this.enemy.stats.damage,
-            critChance: this.enemy.stats.critChance,
-            critDamage: this.enemy.stats.critDamage,
-            coinValue: this.enemy.stats.coinValue,
-            attackSpeed: this.enemy.stats.attackSpeed,
-
+            health: Number((this.enemyType.stats.health * (this.level * 1.25)).toFixed(2)),
+            defense: Number((this.enemyType.stats.defense * (this.level * 1.05)).toFixed(2)),
+            damage: Number((this.enemyType.stats.damage * (this.level * 1.1)).toFixed(2)),
+            critChance: Number((this.enemyType.stats.critChance + (this.level)).toFixed(2)),
+            critDamage: Number(((this.enemyType.stats.critDamage * .90) + (this.level * .05)).toFixed(2)),
+            attackSpeed: this.enemyType.stats.attackSpeed
         }
-
-        this.level = level;
-        this.rollElite();
-        this.calculateLevel(this.level);
-    }
-
-    async rollElite() {
-        const randomNum = Math.random()
-        let elite = false
-        if(randomNum > .85){
-            elite = true
-        }
-        else{
-            elite = false
-        }
-        if(elite == true){
-            let elite = pickWeightedItem(await (await enemyElite()).json())
-            this.stats.health += elite.stats.health
-            this.stats.defense += elite.stats.defense
-            this.stats.damage += elite.stats.damage
-            this.stats.critChance += elite.stats.crit_chance
-            this.stats.critDamage += elite.stats.crit_damage
-            this.stats.coinValue *= 1.5
+        this.isElite = false;
+        this.coinValue = this.enemyType.stats.coinValue * (this.level * 1.5);
+        const randomNum = Math.random();
+        if(randomNum >= .85){
+            this.stats.health += Number((this.eliteType.stats.health * (this.level)));
+            this.stats.defense += Number((this.eliteType.stats.defense * (this.level )));
+            this.stats.damage += Number((this.eliteType.stats.damage * (this.level)));
+            this.stats.critChance += Number((this.eliteType.stats.critChance + (this.level )));
+            this.stats.critDamage = Number(((this.stats.critDamage * this.eliteType.stats.critDamage) + ((this.level * .05))).toFixed(2));
+            this.coinValue += (this.eliteType.weight * 2) * (this.level * 3);
+            this.isElite = true;
+            this.name = (`${this.eliteType.name} ${this.enemyType.name}`);
         }
     }
-
-    calculateLevel(level) {
-        this.stats.health += level * 1.3
-        this.stats.defense += level * 1.25
-        this.stats.damage += level * 1.15
-        this.stats.critChance += level * 1.05
-        this.stats.critDamage += level * 1.1
-        this.stats.coinValue += level * 1.45
-    }
+  
 }
+console.log(new enemy(1))

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>Line RPG</title>
-</head>s
+</head>
 
 <body>
     <h1>Endless RPG</h1>
@@ -15,13 +15,27 @@
         <button id="about">About</button>
     </header> 
     <main id="game_main">
-       
+        <div class="stats-display">
+            <div class="gold-display">Gold: <span id="gold-amount">0</span></div>
+           
+        </div>
+        
+        <div class="action-buttons">
+            <button id="battle">Battle</button>
+            <button id="generate-weapon">Generate Weapon (50 Gold)</button>
+            <button id="show-stats">Inventory & Stats</button>
+        </div>
+
+        <div id="stats-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2>Player Stats</h2>
+                <div id="player-stats"></div>
+            </div>
+        </div>
+
         <h3>Battle Log</h3>
         <div id="battle_log"></div>
-        <button id="battle">Battle</button>
-        <button id="openInventory">Inventory</button>
-        <button id="Buy Item">Generate Item</button>
-        </div>
     </main>
     <script type="module" src="main.js"></script>
 </body>

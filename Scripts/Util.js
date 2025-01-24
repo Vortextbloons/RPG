@@ -39,7 +39,7 @@ export function update_display_muti(id_arry, value_arry, type = "text") {
     }
 
 }
-export function add_event_listener(id, event, func) {
+export function addEventListener(id, event, func) {
     const element = document.getElementById(id)
     element.addEventListener(event, func)
 }
