@@ -13,16 +13,16 @@ export function averageGearStats (numberOfWeapons) {
             return p + c.stats.damage
         }, 0)/weaponList.length).toFixed(2),
         averageCritChance: (weaponList.reduce((p, c) =>{
-            return p + c.stats.crit_chance
+            return p + c.stats.critChance
         }, 0)/weaponList.length).toFixed(2),
         averageCritDamage: (weaponList.reduce((p, c) =>{
-            return p + c.stats.crit_damage
+            return p + c.stats.critDamage
         }, 0)/weaponList.length).toFixed(2),
         averageAttackSpeed: (weaponList.reduce((p, c) =>{
-            return p + c.stats.attack_speed
+            return p + c.stats.attackSpeed
         }, 0)/weaponList.length).toFixed(2),
         averageStatusChance: (weaponList.reduce((p, c) =>{
-            return p + c.stats.status_chance
+            return p + c.stats.statusChance
         }, 0)/weaponList.length).toFixed(2),
     }
     console.log(weaponList)

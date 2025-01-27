@@ -16,10 +16,10 @@ const eliteData = await getEliteData();
 
 export class enemy {
     constructor(level = 1) {
-        this.level = Number(level);
+        this.level = Number(level) || 1;
         this.enemyType = randomPart(enemyTypeData, 'stats').item_value
         this.eliteType = randomPart(eliteData, 'stats').item_value;
-        this.name = this.enemyType.name;
+        this.name = `Level ${this.level} ${this.enemyType.name}`;
         this.stats = {
             health: Number((this.enemyType.stats.health * (this.level * 1.25)).toFixed(2)),
             defense: Number((this.enemyType.stats.defense * (this.level * 1.05)).toFixed(2)),
@@ -28,6 +28,7 @@ export class enemy {
             critDamage: Number(((this.enemyType.stats.critDamage * .90) + (this.level * .05)).toFixed(2)),
             attackSpeed: this.enemyType.stats.attackSpeed
         }
+        this.stats.maxHealth = this.stats.health;
         this.isElite = false;
         this.coinValue = this.enemyType.stats.coinValue * (this.level * 1.5);
         const randomNum = Math.random();
@@ -39,7 +40,7 @@ export class enemy {
             this.stats.critDamage = Number(((this.stats.critDamage * this.eliteType.stats.critDamage) + ((this.level * .05))).toFixed(2));
             this.coinValue += (this.eliteType.weight * 2) * (this.level * 3);
             this.isElite = true;
-            this.name = (`${this.eliteType.name} ${this.enemyType.name}`);
+            this.name = ( `Level ${this.level} ${this.eliteType.name} ${this.enemyType.name}`);
         }
     }
   

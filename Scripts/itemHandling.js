@@ -11,11 +11,11 @@ class Weapon {
 
     calculateStats() {
         this.weapon_class_stats = {
-            damage: Number(((this.prefix.stats.damage + this.name.stats.damage + this.ending.stats.damage) * this.rarity.stats.statMuti).toFixed(2)),
-            critChance: Number(((this.prefix.stats.critChance + this.name.stats.critChance + this.ending.stats.critChance) * (this.rarity.stats.statMuti * 0.95)).toFixed(2)),
-            critDamage: Number((((this.prefix.stats.critDamage + this.name.stats.critDamage + this.ending.stats.critDamage) * (this.rarity.stats.statMuti * 1.15))).toFixed(2)),
+            damage: Number((this.name.stats.damage * (this.prefix.stats.damage * this.ending.stats.damage) * this.rarity.stats.statMuti).toFixed(2)),
+            critChance: Number((this.name.stats.critChance * (this.prefix.stats.critChance * this.ending.stats.critChance) * (this.rarity.stats.statMuti)).toFixed(2)),
+            critDamage: Number((this.name.stats.critDamage * (this.prefix.stats.critDamage * this.ending.stats.critDamage) * (this.rarity.stats.statMuti)).toFixed(2)),
             attackSpeed: Number((this.name.stats.attackSpeed || 0)),
-            statusChance: Number(((this.prefix.stats.statusChance + this.name.stats.statusChance + this.ending.stats.statusChance) * this.rarity.stats.statMuti).toFixed(2))
+            statusChance: Number((this.name.stats.statusChance * (this.prefix.stats.statusChance * this.ending.stats.statusChance) * this.rarity.stats.statMuti).toFixed(2))
         };
         return this.weapon_class_stats;
     }
@@ -43,12 +43,13 @@ export function generateWeapon() {
     const rarity = randomPart(items.rarities.rarities, 'stats');
     const weapon = new Weapon(pre_fix.item_value, name.item_value, end.item_value, rarity.item_value);
 
-    const weaponStats = weapon.calculateStats()
-    if (weaponStats.critDamage < 1.1) { weaponStats.critDamage = 1.1 }
+    if (weapon.weapon_class_stats.critDamage < 1.1) {
+        weapon.weapon_class_stats.critDamage = 1.1;
+    }
 
     return {
         weaponName: `${rarity.call_value} ${pre_fix.call_value} ${name.call_value} ${end.call_value}`,
-        stats: weaponStats,
+        stats: weapon.weapon_class_stats,
     };
 }
 

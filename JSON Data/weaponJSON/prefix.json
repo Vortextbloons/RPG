@@ -6,9 +6,9 @@
             "element": "Fire",
             "colorValue": "rgb(255, 80, 0)",
             "stats": {
-                "damage": 50,
-                "critDamage": 0.15,
-                "critChance": 10,
+                "damage": 1.6,
+                "critDamage": 1.05,
+                "critChance": 1.05,
                 "statusChance": 5
             }
         },
@@ -18,9 +18,9 @@
             "element": "Ice",
             "colorValue": "rgb(150, 230, 255)",
             "stats": {
-                "damage": 25,
-                "critDamage": 0.35,
-                "critChance": 10,
+                "damage": 1.2,
+                "critDamage": 1.3,
+                "critChance": 1.1,
                 "statusChance": 5
             }
         },
@@ -30,9 +30,9 @@
             "element": "Earth",
             "colorValue": "rgb(139, 69, 19)",
             "stats": {
-                "damage": 35,
-                "critDamage": 0.25,
-                "critChance": 20,
+                "damage": 1.3,
+                "critDamage": 1.2,
+                "critChance": 1.2,
                 "statusChance": 5
             }
         },
@@ -42,9 +42,9 @@
             "element": "Dark",
             "colorValue": "rgb(75, 0, 130)",
             "stats": {
-                "damage": 35,
-                "critDamage": 0.3,
-                "critChance": 40,
+                "damage": 1.3,
+                "critDamage": 1.1,
+                "critChance": 1.4,
                 "statusChance": 5
             }
         }

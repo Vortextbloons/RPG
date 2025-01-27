@@ -12,6 +12,46 @@ export function updateGoldDisplay(value) {
     document.getElementById('gold-amount').textContent = value;
 }
 
+function createTooltip(item) {
+    const tooltip = document.createElement('div');
+    tooltip.className = 'tooltip';
+    tooltip.id = 'item-tooltip';
+    tooltip.innerHTML = `
+        <div class="item-name">${item.weaponName}</div>
+        <div class="stat-line">
+            <span>Damage:</span>
+            <span>${item.stats.damage}</span>
+        </div>
+        <div class="stat-line">
+            <span>Crit Chance:</span>
+            <span>${item.stats.critChance}%</span>
+        </div>
+        <div class="stat-line">
+            <span>Crit Damage:</span>
+            <span>${item.stats.critDamage}x</span>
+        </div>
+        <div class="stat-line">
+            <span>Attack Speed:</span>
+            <span>${item.stats.attackSpeed}</span>
+        </div>
+    `;
+    return tooltip;
+}
+
+function updateTooltipPosition(e, tooltip) {
+    const x = e.pageX + 10;
+    const y = e.pageY + 10;
+    tooltip.style.left = `${x}px`;
+    tooltip.style.top = `${y}px`;
+}
+
+function removeExistingTooltips() {
+    const existingTooltip = document.getElementById('item-tooltip');
+    if (existingTooltip) {
+        existingTooltip.remove();
+    }
+}
+
 export function displayStats(player) {
     const statsContainer = document.getElementById('player-stats');
     
@@ -24,7 +64,7 @@ export function displayStats(player) {
         if (i < player.inventory.length) {
             const item = player.inventory[i];
             inventoryHTML += `
-                <div class="inventory-item">
+                <div class="inventory-item" data-item-index="${i}">
                     <span class="item-name">${item.weaponName}</span>
                     <div class="item-actions">
                         <button onclick="window.equipItem(${i})">Equip</button>
@@ -65,6 +105,46 @@ export function displayStats(player) {
             ${inventoryHTML}
         </div>
     `;
+
+    // Add event listeners for tooltips after rendering
+    setTimeout(() => {
+        const inventoryItems = document.querySelectorAll('.inventory-item');
+        inventoryItems.forEach(item => {
+            const itemIndex = item.dataset.itemIndex;
+            const itemData = player.inventory[itemIndex];
+            
+            item.addEventListener('mouseenter', (e) => {
+                removeExistingTooltips();
+                const tooltip = createTooltip(itemData);
+                document.body.appendChild(tooltip);
+                updateTooltipPosition(e, tooltip);
+                
+                const moveHandler = (e) => updateTooltipPosition(e, tooltip);
+                
+                item.addEventListener('mousemove', moveHandler);
+                item.addEventListener('mouseleave', () => {
+                    removeExistingTooltips();
+                });
+            });
+        });
+
+        // Add tooltip for equipped weapon if it exists
+        const equippedWeapon = document.querySelector('.equipment-slot');
+        if (player.equipment.weapon) {
+            equippedWeapon.addEventListener('mouseenter', (e) => {
+                removeExistingTooltips();
+                const tooltip = createTooltip(player.equipment.weapon);
+                document.body.appendChild(tooltip);
+                updateTooltipPosition(e, tooltip);
+                
+                const moveHandler = (e) => updateTooltipPosition(e, tooltip);
+                equippedWeapon.addEventListener('mousemove', moveHandler);
+                equippedWeapon.addEventListener('mouseleave', () => {
+                    removeExistingTooltips();
+                });
+            });
+        }
+    }, 0);
 }
 
 export function openStatsModal() {
@@ -84,4 +164,27 @@ export function initializeModalHandlers() {
             closeModal();
         }
     });
+}
+
+export function updateHealthDisplay(player, enemy) {
+    const playerHealthValue = document.getElementById('player-health-value');
+    const enemyHealthValue = document.getElementById('enemy-health-value');
+    const playerHealthBar = document.getElementById('player-health-bar');
+    const enemyHealthBar = document.getElementById('enemy-health-bar');
+    
+    playerHealthValue.textContent = player.stats.health
+    enemyHealthValue.textContent = enemy.stats.health
+    
+    
+    // Update health bars
+    const playerHealthPercent = (player.stats.health / 200) * 100;
+    const enemyHealthPercent = (enemy.stats.health / enemy.stats.maxHealth) * 100;
+    
+    playerHealthBar.style.width = `${playerHealthPercent}%`;
+    enemyHealthBar.style.width = `${enemyHealthPercent}%`;
+}
+
+export function showBattlePanel(show = true) {
+    const panel = document.getElementById('battle-health-panel');
+    panel.style.display = show ? 'block' : 'none';
 }

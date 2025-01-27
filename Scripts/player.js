@@ -1,5 +1,5 @@
 import { generateWeapon } from "./itemHandling.js";
-export class player {
+export class Player {
     constructor(item = "None") {
         this.gold = 0
         this.stats = {
@@ -22,26 +22,15 @@ export class player {
         this.maxInventorySize = 10;
     }
 
-    addItemStats(item) {
+    applyItemStats(item, sign = 1) {
         if (!item || !item.stats) return;
-        this.stats.damage += Number(item.stats.damage || 0);
-        this.stats.critChance += Number(item.stats.critChance || 0);
-        this.stats.critDamage += Number(item.stats.critDamage || 0);
-        this.stats.attackSpeed += Number(item.stats.attackSpeed || 0);
-        this.stats.statusChance = Number(item.stats.statusChance || 0);
-        this.stats.health += Number(item.stats.health || 0);
-        this.stats.defense += Number(item.stats.defense || 0);
-    }
-
-    removeItemStats(item) {
-        if (!item || !item.stats) return;
-        this.stats.damage -= Number(item.stats.damage || 0);
-        this.stats.critChance -= Number(item.stats.critChance || 0);
-        this.stats.critDamage -= Number(item.stats.critDamage || 0);
-        this.stats.attackSpeed -= Number(item.stats.attackSpeed || 0);
-        this.stats.statusChance = 0;
-        this.stats.health -= Number(item.stats.health || 0);
-        this.stats.defense -= Number(item.stats.defense || 0);
+        this.stats.damage     += Number(item.stats.damage || 0)     * sign;
+        this.stats.critChance += Number(item.stats.critChance || 0) * sign;
+        this.stats.critDamage += Number(item.stats.critDamage || 0) * sign;
+        this.stats.attackSpeed += Number(item.stats.attackSpeed || 0) * sign;
+        this.stats.statusChance = sign > 0 ? Number(item.stats.statusChance || 0) : 0;
+        this.stats.health     += Number(item.stats.health || 0)     * sign;
+        this.stats.defense    += Number(item.stats.defense || 0)    * sign;
     }
 
     addInventory(item) {
@@ -63,12 +52,12 @@ export class player {
         const item = this.inventory[inventoryIndex];
         // Unequip current item if exists
         if (this.equipment[slot]) {
-            this.removeItemStats(this.equipment[slot]);
+            this.applyItemStats(this.equipment[slot], -1);
         }
         
         // Equip new item
         this.equipment[slot] = item;
-        this.addItemStats(item);
+        this.applyItemStats(item, 1);
         
         // Remove from inventory
         this.inventory.splice(inventoryIndex, 1);
@@ -80,7 +69,7 @@ export class player {
         if (this.inventory.length >= this.maxInventorySize) return false;
         
         // Remove stats
-        this.removeItemStats(this.equipment[slot]);
+        this.applyItemStats(this.equipment[slot], -1);
         
         // Move to inventory
         this.inventory.push(this.equipment[slot]);

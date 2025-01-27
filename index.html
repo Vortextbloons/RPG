@@ -17,9 +17,24 @@
     <main id="game_main">
         <div class="stats-display">
             <div class="gold-display">Gold: <span id="gold-amount">0</span></div>
-           
         </div>
         
+        <!-- Add this new health panel -->
+        <div id="battle-health-panel" class="battle-health-panel">
+            <div class="health-bar-container">
+                <div>Player: <span id="player-health-value">200</span></div>
+                <div class="health-bar">
+                    <div id="player-health-bar" class="health-fill"></div>
+                </div>
+            </div>
+            <div class="health-bar-container">
+                <div>Enemy: <span id="enemy-health-value">100</span></div>
+                <div class="health-bar">
+                    <div id="enemy-health-bar" class="health-fill"></div>
+                </div>
+            </div>
+        </div>
+
         <div class="action-buttons">
             <button id="battle">Battle</button>
             <button id="generate-weapon">Generate Weapon (50 Gold)</button>

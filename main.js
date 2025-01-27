@@ -1,22 +1,23 @@
 import { addEventListener } from "./Scripts/Util.js";
 import { generateWeapon } from "./Scripts/itemHandling.js";
-import { player } from "./Scripts/player.js";
+import { Player } from "./Scripts/player.js";
 import { enemy } from "./Scripts/enemy.js";
-import { battle } from "./Scripts/fightingLogic.js";
+import { battle, isBattleActive } from "./Scripts/fightingLogic.js";
 import { updateGoldDisplay, updateBattleLog, displayStats, initializeModalHandlers, openStatsModal } from "./Scripts/displayScripts.js";
+import { averageGearStats } from "./Scripts/testLogic.js";
 
-const Player = new player();
-Player.gold = 300
+const player = new Player(); 
+player.gold = 300;
 const WEAPON_COST = 50;
 
 function tryGenerateWeapon() {
-    if (Player.gold >= WEAPON_COST) {
+    if (player.gold >= WEAPON_COST) {
         const newWeapon = generateWeapon();
-        if (Player.addInventory(newWeapon)) {
-            Player.gold -= WEAPON_COST;
-            updateGoldDisplay(Player.gold);
+        if (player.addInventory(newWeapon)) {
+            player.gold -= WEAPON_COST;
+            updateGoldDisplay(player.gold);
             updateBattleLog(`Generated weapon: ${newWeapon.weaponName}`);
-            displayStats(Player);
+            displayStats(player);
         } else {
             updateBattleLog('Inventory is full!', 'death');
         }
@@ -27,37 +28,52 @@ function tryGenerateWeapon() {
 
 // Add global functions for HTML onclick events
 window.equipItem = (index) => {
-    Player.equipItem(index);
-    displayStats(Player);
+    const existingTooltip = document.getElementById('item-tooltip');
+    if (existingTooltip) {
+        existingTooltip.remove();
+    }
+    player.equipItem(index);
+    displayStats(player);
 };
 
 window.unequipItem = () => {
-    if (!Player.unequipItem()) {
+    const existingTooltip = document.getElementById('item-tooltip');
+    if (existingTooltip) {
+        existingTooltip.remove();
+    }
+    if (!player.unequipItem()) {
         updateBattleLog('Inventory is full!', 'death');
     }
-    displayStats(Player);
+    displayStats(player);
 };
 
 window.removeItem = (index) => {
-    Player.removeItem(index);
-    displayStats(Player);
+    const existingTooltip = document.getElementById('item-tooltip');
+    if (existingTooltip) {
+        existingTooltip.remove();
+    }
+    player.removeItem(index);
+    displayStats(player);
 };
 
 addEventListener('generate-weapon', 'click', tryGenerateWeapon);
-addEventListener('battle', 'click', () => {
-    const Enemy = new enemy(1);
-    console.log(Enemy);
-    battle(Player, Enemy);
-    updateGoldDisplay(Player.gold);
+addEventListener('battle', 'click', async () => {
+    if (isBattleActive()) {
+        updateBattleLog("Cannot start a new battle while one is in progress!", "death");
+        return;
+    }
+    const Enemy = new enemy(Math.floor(player.gold / 50));
+    await battle(player, Enemy);
+    updateGoldDisplay(player.gold);
 });
 
 addEventListener('show-stats', 'click', () => {
-    displayStats(Player);
+    displayStats(player);
     openStatsModal();
 });
-
+console.log(averageGearStats(100000))
 initializeModalHandlers();
-updateGoldDisplay(Player.gold);
+updateGoldDisplay(player.gold);
 
 
 

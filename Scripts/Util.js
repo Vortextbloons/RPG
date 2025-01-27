@@ -1,8 +1,6 @@
 export function random_array(array) {
     let index = Math.floor(Math.random() * array.length);
-    const random_array = array[index];
-    console.log(index);
-    return random_array;
+    return array[index];
 }
 export function update_display(id, value, type = "text") {
     const element = document.getElementById(id)
@@ -42,16 +40,6 @@ export function update_display_muti(id_arry, value_arry, type = "text") {
 export function addEventListener(id, event, func) {
     const element = document.getElementById(id)
     element.addEventListener(event, func)
-}
-
-export function get_value_from_object(object, property, value) {
-    for (let key in object) {
-        if (object.hasOwnProperty(key)) {
-            if (object[key][property] === value) {
-                return key;
-            }
-        }
-    }
 }
 
 export function random_number(min, max) {
