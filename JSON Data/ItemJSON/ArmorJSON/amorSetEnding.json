@@ -1,0 +1,70 @@
+{
+    "endings": {
+        "of Light": {
+            "name": "of Light",
+            "weight": 1,
+            "setIndex": 1,
+            "stats": {
+                "defense": 1.3,
+                "health": 1.4,
+                "damage": 1.1,
+                "critDamage": 1.1,
+                "critChance": 1.1,
+                "statusChance": 1.2
+            }
+        },
+        "of Darkness": {
+            "name": "of Darkness",
+            "weight": 1,
+            "setIndex": 2,
+            "stats": {
+                "defense": 1.2,
+                "health": 1.2,
+                "damage": 1.3,
+                "critDamage": 1,
+                "critChance": 1.3,
+                "statusChance": 1.1
+            }
+        },
+        "of Ages": {
+            "name": "of Ages",
+            "weight": 8,
+            "setIndex": 3,
+            "stats": {
+                "damage": 1,
+                "critDamage": 1,
+                "critChance": 1,
+
+                "defense": 1.2,
+                "health": 1.2,
+                "statusChance": 1.1
+            }
+        },
+        "Of Normality": {
+            "name": "Of Normality",
+            "weight": 8,
+            "setIndex": 4,
+            "stats": {
+                "damage": 1,
+                "critDamage": 1,
+                "critChance": 1,
+                "defense": 1.25,
+                "health": 1.25,
+                "statusChance": 1.1
+            }
+        },
+        "Of The End": {
+            "name": "Of The End",
+            "weight": 5,
+            "setIndex": 5,
+            "stats": {
+                "defense": 1.3,
+                "health": 1.3,
+                "damage": 1.05,
+                "critDamage": 1.05,
+                "critChance": 1.1,
+                "statusChance": 1.3
+            }
+        }
+    }
+}

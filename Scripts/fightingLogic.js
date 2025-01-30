@@ -1,7 +1,6 @@
-import { enemy } from "./enemy.js";
-
-import { updateBattleLog, updateGoldDisplay, updateHealthDisplay, showBattlePanel } from "./displayScripts.js";
-
+import { updateBattleLog, updateGoldDisplay } from "./displayScripts.js";
+import { GAME_CONFIG } from './gameConfig.js';
+import { initializeLevelSelector } from "./displayScripts.js";
 let isBattleInProgress = false;
 
 function hyperbolicFunction(x, rate = 80) {
@@ -49,7 +48,6 @@ export function calculateCrits(critChance, critDamage) {
 }
 
 function fight(attacker, defender, isPlayer) {
- 
     let baseDamage = attacker.stats.damage;
     let damage = calculateDefense(baseDamage, defender.stats.defense);
     
@@ -59,18 +57,14 @@ function fight(attacker, defender, isPlayer) {
     }
 
     damage = Number(damage.toFixed(2));
-    damage.toFixed(1)
-    defender.stats.health -= damage.toFixed(2);
-    defender.stats.health.toFixed(2);
+    // Ensure health doesn't go below 0
+    defender.stats.health = Math.max(0, defender.stats.health - damage);
 
     const message = critInfo.isCrit
         ? `${isPlayer ? 'You' : `${attacker.name}`} did ${damage} damage with a crit! (CritTier: ${critInfo.critTier}, CritMultiplier: ${critInfo.critDamage})`
         : `${isPlayer ? 'You' : `${attacker.name}`} did ${damage} damage`;
 
     updateBattleLog(message);
-  
-
-
     console.log(message);
 }
 
@@ -78,53 +72,115 @@ async function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function updateHealthDisplay(attacker, defender, isPlayer) {
+    const playerHealth = document.querySelector('.player-health');
+    const enemyHealth = document.querySelector('.enemy-health');
+    const playerText = document.querySelector('.player-stats .health-text');
+    const enemyText = document.querySelector('.enemy-stats .health-text');
+
+    // Calculate health percentages
+    const playerPercent = Math.max(0, (attacker.stats.health / attacker.stats.maxHealth) * 100);
+    const enemyPercent = Math.max(0, (defender.stats.health / defender.stats.maxHealth) * 100);
+
+    // Update health bars
+    playerHealth.style.width = `${playerPercent}%`;
+    enemyHealth.style.width = `${enemyPercent}%`;
+
+    // Update health text with non-negative values
+    playerText.textContent = `${Math.max(0, Math.ceil(attacker.stats.health))} / ${attacker.stats.maxHealth}`;
+    enemyText.textContent = `${Math.max(0, Math.ceil(defender.stats.health))} / ${defender.stats.maxHealth}`;
+
+    // Add color transitions based on health percentage
+    playerHealth.style.background = `linear-gradient(90deg, 
+        ${playerPercent > 50 ? '#2ecc71' : '#e67e22'}, 
+        ${playerPercent > 50 ? '#27ae60' : '#d35400'})`;
+    
+    enemyHealth.style.background = `linear-gradient(90deg, 
+        ${enemyPercent > 50 ? '#e74c3c' : '#c0392b'}, 
+        ${enemyPercent > 50 ? '#c0392b' : '#962b22'})`;
+
+    // Add animation when health changes
+    playerHealth.parentElement.classList.add('health-changed');
+    enemyHealth.parentElement.classList.add('health-changed');
+    
+    setTimeout(() => {
+        playerHealth.parentElement.classList.remove('health-changed');
+        enemyHealth.parentElement.classList.remove('health-changed');
+    }, 300);
+}
+
 export async function battle(player, enemy) {
+
+    let battlePlayer = {
+        ...player,
+        stats: { ...player.stats }
+    };
+    let battleEnemy = {
+        ...enemy,
+        stats: { ...enemy.stats }
+    };
     if (isBattleInProgress) {
         updateBattleLog("A battle is already in progress!", "death");
         return false;
     }
     
     isBattleInProgress = true;
-    let playerSpeed = player.stats.attackSpeed || 0;
-    let enemySpeed = enemy.stats.attackSpeed || 0;
-    let startingHealth = player.stats.health;
+    let playerSpeed = battlePlayer.stats.attackSpeed || 0;
+    let enemySpeed = battleEnemy.stats.attackSpeed || 0;
+   
     
-    showBattlePanel(true);
-    updateHealthDisplay(player, enemy);
     updateBattleLog(`Battle started! Player Health: ${player.stats.health.toFixed(1)} | Enemy Health: ${enemy.stats.health.toFixed(1)}`);
     
-    while (player.stats.health > 0 && enemy.stats.health > 0) {
-        await delay(500); // 1 second delay between rounds
+    const config = GAME_CONFIG.battle;
+    await delay(config.animations.attackDelay);
+    
+    // Show health bars at battle start
+    const battleStats = document.querySelector('.battle-stats');
+    battleStats.classList.remove('hidden');
+    battleStats.classList.add('visible');
+    
+    // Store initial max health
+    battlePlayer.stats.maxHealth = battlePlayer.stats.health;
+    battleEnemy.stats.maxHealth = battleEnemy.stats.health;
+    
+    // Initial health display
+    updateHealthDisplay(battlePlayer, battleEnemy);
+
+    while (battlePlayer.stats.health > 0 && battleEnemy.stats.health > 0) {
+        await delay(500);
         
-        if (playerSpeed >= enemySpeed) {
-            fight(player, enemy, true);
-            updateHealthDisplay(player, enemy);
-            if (enemy.stats.health <= 0) break;
-            await delay(500); // 0.5 second delay between attacks
-            fight(enemy, player, false);
-            updateHealthDisplay(player, enemy);
+        if (playerSpeed <= enemySpeed) {
+            fight(battlePlayer, battleEnemy, true);
+            if (battleEnemy.stats.health <= 0) break;
+            await delay(500);
+            fight(battleEnemy, battlePlayer, false);
         } else {
-            fight(enemy, player, false);
-            updateHealthDisplay(player, enemy);
-            if (player.stats.health <= 0) break;
-            await delay(500); // 0.5 second delay between attacks
-            fight(player, enemy, true);
-            updateHealthDisplay(player, enemy);
+            fight(battleEnemy, battlePlayer, false);
+            if (battlePlayer.stats.health <= 0) break;
+            await delay(500);
+            fight(battlePlayer, battleEnemy, true);
         }
+        updateHealthDisplay(battlePlayer, battleEnemy);
     }
 
-    if (player.stats.health <= 0) {
-        const goldLost = Math.floor(player.gold * 0.75);
-        player.gold -= goldLost;
-        player.stats.health = startingHealth;
+    if (battlePlayer.stats.health <= 0) {
+        const goldLost = Math.floor(player.gold * config.enemyScaling.goldLossOnDeath);
+        player.gold -= goldLost.toFixed(2);
         updateBattleLog(`Player has died to ${enemy.name}! Lost ${goldLost} gold!`, 'death');
+        
     } else {
+        player.unlockedData.unlockedLevel = Math.max(player.unlockedData.unlockedLevel, enemy.level + 1);
         updateBattleLog(`${enemy.name} has been defeated! Gained ${enemy.coinValue} gold`, 'victory');
         player.gold += enemy.coinValue;
+        initializeLevelSelector(enemy.level, player)
     }
     updateGoldDisplay(player.gold);
-    player.stats.health = startingHealth;
-    showBattlePanel(false);
+    
+    setTimeout(() => {
+        battleStats.classList.remove('visible');
+        battleStats.classList.add('hidden');
+    }, 300);
+    
     isBattleInProgress = false;
     return true;
 }

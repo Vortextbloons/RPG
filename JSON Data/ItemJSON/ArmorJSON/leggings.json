@@ -1,0 +1,34 @@
+{
+    "leggings": {
+        "Strong Leggings": {
+            "name": "Strong Leggings",
+            "weight": 5,
+            "stats": {
+                "defense": 13,
+                "health": 35,
+                "damage": 10,
+                "critChance": 5
+            }
+        },
+        "Mighty Leggings": {
+            "name": "Mighty Leggings",
+            "weight": 2,
+            "stats": {
+                "defense": 8,
+                "health": 25,
+                "damage": 20,
+                "critChance": 8,
+                "critDamage": 0.5
+            }
+        },
+        "ChainMail Leggings": {
+            "name": "ChainMail Leggings",
+            "weight": 8,
+            "stats": {
+                "defense": 20,
+                "health": 40,
+                "critDamage": 0.2
+            }
+        }
+    }
+}

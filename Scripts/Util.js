@@ -1,3 +1,68 @@
+export function averageGearStats (numberOfItems, itemType="weapon") {
+    const itemList = []
+    if(itemType === "weapon") {
+        for (let i = 0; i < numberOfWeapons; i++) {
+            const weapon = generateWeapon();
+            itemList.push(weapon)
+        }
+    }
+    else if(itemType === "armor") {
+        for (let i = 0; i < numberOfItems; i++) {
+            const armor = generateArmor();
+            itemList.push(armor)
+        }
+    }
+    else {
+        console.error("Invalid item type")
+    }
+
+    const averageWeaponStats = {
+        averageHealth: (itemList.reduce((p, c) =>{
+            return p + c.stats.health
+        }, 0)/itemList.length).toFixed(2),
+        averageDefense: (itemList.reduce((p, c) =>{
+            return p + c.stats.defense
+        }, 0)/itemList.length).toFixed(2),
+
+        averageDamage: (itemList.reduce((p, c) =>{
+            return p + c.stats.damage
+        }, 0)/itemList.length).toFixed(2),
+        averageCritChance: (itemList.reduce((p, c) =>{
+            return p + c.stats.critChance
+        }, 0)/itemList.length).toFixed(2),
+        averageCritDamage: (itemList.reduce((p, c) =>{
+            return p + c.stats.critDamage
+        }, 0)/itemList.length).toFixed(2),
+        averageAttackSpeed: (itemList.reduce((p, c) =>{
+            return p + c.stats.attackSpeed
+        }, 0)/itemList.length).toFixed(2),
+        averageStatusChance: (itemList.reduce((p, c) =>{
+            return p + c.stats.statusChance
+        }, 0)/itemList.length).toFixed(2),
+    }
+    console.log(itemList)
+    return averageWeaponStats
+}
+
+export function averageEnemyStats(numberOfEnemies, level) {
+    const enemyList = [];
+    for (let i = 0; i < numberOfEnemies; i++) {
+        const temptEnemy = new enemy(level);
+        enemyList.push(temptEnemy);
+    }
+    const averageEnemyStats = {
+        averageHealth: (enemyList.reduce((p, c) => p + c.stats.health, 0) / enemyList.length).toFixed(2),
+        averageDefense: (enemyList.reduce((p, c) => p + c.stats.defense, 0) / enemyList.length).toFixed(2),
+        averageDamage: (enemyList.reduce((p, c) => p + c.stats.damage, 0) / enemyList.length).toFixed(2),
+        averageCritChance: (enemyList.reduce((p, c) => p + c.stats.critChance, 0) / enemyList.length).toFixed(2),
+        averageCritDamage: (enemyList.reduce((p, c) => p + c.stats.critDamage, 0) / enemyList.length).toFixed(2),
+        averaecoineValue: (enemyList.reduce((p, c) => p + c.coinValue, 0) / enemyList.length).toFixed(2),
+        averagePercentElite: (enemyList.filter(e => e.isElite).length / enemyList.length).toFixed(2),
+        enemyLevel: level,
+
+    };
+    return averageEnemyStats;
+}
 export function random_array(array) {
     let index = Math.floor(Math.random() * array.length);
     return array[index];

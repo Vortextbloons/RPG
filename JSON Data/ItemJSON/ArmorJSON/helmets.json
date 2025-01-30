@@ -1,0 +1,34 @@
+{
+    "helmets": {
+        "Strong Helmet": {
+            "name": "Strong Helmet",
+            "weight": 5,
+            "stats": {
+                "defense": 10,
+                "health": 30,
+                "damage": 5,
+                "critChance": 5
+            }
+        },
+        "Mighty Helmet": {
+            "name": "Mighty Helmet",
+            "weight": 2,
+            "stats": {
+                "defense": 5,
+                "health": 20,
+                "damage": 20,
+                "critChance": 8,
+                "critDamage": 0.5
+            }
+        },
+        "ChainMail Helmet": {
+            "name": "ChainMail Helmet",
+            "weight": 8,
+            "stats": {
+                "defense": 15,
+                "health": 30,
+                "critDamage": 0.2
+            }
+        }
+    }
+}

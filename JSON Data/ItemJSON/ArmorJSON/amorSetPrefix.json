@@ -1,0 +1,84 @@
+{
+    "prefixes": {
+        "Divine": {
+            "name": "Divine",
+            "weight": 1,
+            "setIndex": 1,
+            "stats": {
+                "defense": 1.4,
+                "health": 1.3,
+                "damage": 1,
+                "critDamage": 1.1,
+                "critChance": 1.1,
+                "statusChance": 10
+            }
+        },
+        "Demonic": {
+            "name": "Demonic",
+            "weight": 1,
+            "setIndex": 2,
+            "stats": {
+                "defense": 1.25,
+                "health": 1.25,
+                "damage": 1.35,
+                "critDamage": 1.2,
+                "critChance": 1.2,
+                "statusChance": 1.15
+            }
+        },
+        "Ancient": {
+            "name": "Ancient",
+            "weight": 8,
+            "setIndex": 3,
+            "stats": {
+                "defense": 1.3,
+                "health": 1.4,
+                "damage" : 1,
+                "critDamage": 1,
+                "critChance": 1,
+                "statusChance": 1.35
+            }
+        },
+        "Normal": {
+            "name": "Normal",
+            "weight": 8,
+            "setIndex": 4,
+            "stats": {
+                "defense": 1.25,
+                "health": 1.25,
+                "damage": 1,
+                "critDamage": 1,
+                "critChance": 1,
+
+                "statusChance": 1.1
+            }
+        },
+        "Endfull": {
+            "name": "Endfull",
+            "weight": 5,
+            "setIndex": 5,
+            "stats": {
+                "defense": 1.2,
+                "health": 1.2,
+                "damage": 1.05,
+                "critDamage": 1.05,
+                "critChance": 1.1,
+                "statusChance": 1.3
+            }
+        },
+        "Unbreakable": {
+            "name": "Unbreakable",
+            "weight": 5,
+            "setIndex": 6,
+            "stats": {
+                "defense": 1.15,
+                "health": 2.15,
+                "damage": 1,
+                "critDamage": 1,
+                "critChance": 1,
+                "statusChance": 1
+            }
+        }
+
+    }
+}

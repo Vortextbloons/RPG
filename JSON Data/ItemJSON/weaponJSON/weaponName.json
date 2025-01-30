@@ -5,9 +5,11 @@
             "weight": 2,
             "colorValue": "silver",
             "stats": {
+                "health": 10,
+                "defense": 3,
                 "damage": 40,
                 "critDamage": 1.2,
-                "critChance": 20,
+                "critChance": 25,
                 "attackSpeed": 0.85,
                 "statusChance": 5
             }
@@ -18,9 +20,11 @@
             "weight": 8,
             "colorValue": "darkgray",
             "stats": {
+                "health": 15,
+                "defense": 3,
                 "damage": 40,
                 "critDamage": 1,
-                "critChance": 8,
+                "critChance": 10,
                 "attackSpeed": 1,
                 "statusChance": 5
             }
@@ -30,9 +34,11 @@
             "weight": 5,
             "colorValue": "rgb(180, 180, 220)",
             "stats": {
+                "health": 25,
+                "defense": 5,
                 "damage": 35,
                 "critDamage": 1.1,
-                "critChance": 15,
+                "critChance": 18,
                 "attackSpeed": 1.1,
                 "statusChance": 5
             }
@@ -42,9 +48,11 @@
             "weight": 5,
             "colorValue": "rgb(200, 180, 160)",
             "stats": {
-                "damage": 45,
+                "health": 0,
+                "defense": 0,
+                "damage": 60,
                 "critDamage": 1.05,
-                "critChance": 8,
+                "critChance": 10,
                 "attackSpeed": 1.15,
                 "statusChance": 5
             }
@@ -54,10 +62,12 @@
             "weight": 3,
             "colorValue": "lightblue",
             "stats": {
-                "damage": 30,
+                "health": 10,
+                "defense": 2,
+                "damage": 40,
                 "critDamage": 1.15,
                 "critChance": 30,
-                "attackSpeed": 0.5,
+                "attackSpeed": 0.65,
                 "statusChance": 5
             }
         },
@@ -66,9 +76,11 @@
             "weight": 1,
             "colorValue": "gold",
             "stats": {
-                "damage": 125,
+                "health": 35,
+                "defense": 25,
+                "damage": 140,
                 "critDamage": 0.8,
-                "critChance": 10,
+                "critChance": 8,
                 "attackSpeed": 1.5,
                 "statusChance": 5
             }
@@ -78,9 +90,11 @@
             "weight": 2,
             "colorValue": "rgb(255, 0, 0)",
             "stats": {
-                "damage": 15,
+                "health": 0,
+                "defense": 0,
+                "damage": 20,
                 "critDamage": 1.25,
-                "critChance": 30,
+                "critChance": 35,
                 "attackSpeed": 0.6,
                 "statusChance": 5
             }
@@ -90,9 +104,11 @@
             "weight": 3,
             "colorValue": "rgb(0, 255, 0)",
             "stats": {
-                "damage": 35,
+                "health": 0,
+                "defense": 0,
+                "damage": 40,
                 "critDamage": 1.15,
-                "critChance": 20,
+                "critChance": 25,
                 "attackSpeed": 0.65,
                 "statusChance": 5
             }

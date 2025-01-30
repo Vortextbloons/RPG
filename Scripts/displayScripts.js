@@ -1,190 +1,317 @@
-export function updateBattleLog(message, type) {
-    const battleLog = document.getElementById('battle_log');
-    const newLogEntry = document.createElement('p');
-    newLogEntry.textContent = message;
-    if (type) {
-        newLogEntry.classList.add(`${type}-text`);
-    }
-    battleLog.appendChild(newLogEntry);
-}
+import { GAME_CONFIG } from './gameConfig.js';
 
-export function updateGoldDisplay(value) {
-    document.getElementById('gold-amount').textContent = value;
-}
 
-function createTooltip(item) {
-    const tooltip = document.createElement('div');
-    tooltip.className = 'tooltip';
-    tooltip.id = 'item-tooltip';
-    tooltip.innerHTML = `
-        <div class="item-name">${item.weaponName}</div>
-        <div class="stat-line">
-            <span>Damage:</span>
-            <span>${item.stats.damage}</span>
-        </div>
-        <div class="stat-line">
-            <span>Crit Chance:</span>
-            <span>${item.stats.critChance}%</span>
-        </div>
-        <div class="stat-line">
-            <span>Crit Damage:</span>
-            <span>${item.stats.critDamage}x</span>
-        </div>
-        <div class="stat-line">
-            <span>Attack Speed:</span>
-            <span>${item.stats.attackSpeed}</span>
-        </div>
-    `;
-    return tooltip;
-}
+const DOM = {
+    battleLog: document.getElementById('battle_log'),
+    goldAmount: document.getElementById('gold-amount'),
+    playerStats: document.getElementById('player-stats'),
+    shopItems: document.getElementById('shop-items'),
+    modals: {
+        stats: document.getElementById('stats-modal'),
+        shop: document.getElementById('shop-modal')
+    },
+    levelGrid: document.getElementById('level-grid') // Add to DOM cache
+};
 
-function updateTooltipPosition(e, tooltip) {
-    const x = e.pageX + 10;
-    const y = e.pageY + 10;
-    tooltip.style.left = `${x}px`;
-    tooltip.style.top = `${y}px`;
-}
 
-function removeExistingTooltips() {
-    const existingTooltip = document.getElementById('item-tooltip');
-    if (existingTooltip) {
-        existingTooltip.remove();
-    }
-}
+const tooltipTemplate = document.createElement('div');
+tooltipTemplate.className = 'tooltip';
+tooltipTemplate.id = 'item-tooltip';
+
+export const updateBattleLog = (() => {
+    const maxMessages = GAME_CONFIG.display.maxBattleLogMessages;
+    return (message, type) => {
+        const entry = document.createElement('p');
+        entry.textContent = message;
+        type && entry.classList.add(`${type}-text`);
+        DOM.battleLog.appendChild(entry);
+        DOM.battleLog.scrollTop = DOM.battleLog.scrollHeight;
+        
+        while (DOM.battleLog.children.length > maxMessages) {
+            DOM.battleLog.removeChild(DOM.battleLog.firstChild);
+        }
+    };
+})();
+
+export const updateGoldDisplay = value => 
+    DOM.goldAmount.textContent = value;
+
+const createTooltip = (() => {
+    const formatStat = ([key, value]) => value ? `
+        <div class="stat-line">
+            <span>${key.charAt(0).toUpperCase() + key.slice(1)}:</span>
+            <span>${key.includes('crit') ? value + (key.includes('Chance') ? '%' : 'x') : value}</span>
+        </div>
+    ` : '';
+
+    return item => {
+        const tooltip = tooltipTemplate.cloneNode(true);
+        tooltip.innerHTML = `
+            <div class="item-name">${item.name}</div>
+            ${Object.entries(item.stats).map(formatStat).join('')}
+        `;
+        return tooltip;
+    };
+})();
+
+const tooltipHandler = (() => {
+    let currentTooltip = null;
+
+    const updatePosition = (e, tooltip) => {
+        const {clientX, clientY} = e;
+        const {innerWidth, innerHeight} = window;
+        const {width, height} = tooltip.getBoundingClientRect();
+        const padding = 10;
+
+        tooltip.style.left = `${clientX + width > innerWidth ? clientX - width - padding : clientX + padding}px`;
+        tooltip.style.top = `${clientY + height > innerHeight ? clientY - height - padding : clientY + padding}px`;
+    };
+
+    return {
+        add: (element, itemData) => {
+            const handlers = {
+                mouseenter: e => {
+                    currentTooltip?.remove();
+                    currentTooltip = createTooltip(itemData);
+                    document.body.appendChild(currentTooltip);
+                    updatePosition(e, currentTooltip);
+                },
+                mousemove: e => currentTooltip && updatePosition(e, currentTooltip),
+                mouseleave: () => {
+                    currentTooltip?.remove();
+                    currentTooltip = null;
+                }
+            };
+
+            Object.entries(handlers).forEach(([event, handler]) => 
+                element.addEventListener(event, handler));
+        }
+    };
+})();
 
 export function displayStats(player) {
-    const statsContainer = document.getElementById('player-stats');
-    
-    // Generate inventory slots HTML
-    const totalSlots = player.maxInventorySize;
-    let inventoryHTML = '<div class="inventory-grid">';
-    
-    // Fill existing items
-    for (let i = 0; i < totalSlots; i++) {
-        if (i < player.inventory.length) {
+    const statsContainer = DOM.playerStats;
+
+    // Fix inventory mapping to safely handle undefined items
+    const inventoryHTML = Array(player.maxInventorySize).fill(null)
+        .map((_, i) => {
             const item = player.inventory[i];
-            inventoryHTML += `
+            return item ? `
                 <div class="inventory-item" data-item-index="${i}">
-                    <span class="item-name">${item.weaponName}</span>
+                    <span class="item-name">${item.name}</span>
                     <div class="item-actions">
                         <button onclick="window.equipItem(${i})">Equip</button>
                         <button onclick="window.removeItem(${i})">Discard</button>
                     </div>
-                </div>
-            `;
-        } else {
-            inventoryHTML += `
-                <div class="empty-slot">
-                    Empty Slot
-                </div>
-            `;
-        }
-    }
-    inventoryHTML += '</div>';
+                </div>` : '<div class="empty-slot">Empty Slot</div>';
+        }).join('');
+
+    const equipmentSlots = ['weapon', 'helmets', 'chestplates', 'leggings', 'boots'];
+    const equipmentHTML = equipmentSlots.map(slot => `
+        <div class="equipment-slot" data-slot="${slot}">
+            <span class="slot-name">${slot.charAt(0).toUpperCase() + slot.slice(1)}:</span>
+            <span class="item-name">${player.equipment[slot]?.name ?? 'None'}</span>
+            ${player.equipment[slot] ? `<button onclick="window.unequipItem('${slot}')">Unequip</button>` : ''}
+        </div>
+    `).join('');
+
+
+    const stats = ['health', 'damage', 'defense', 'critChance', 'critDamage', 'attackSpeed'];
+    const statsHTML = stats.map(stat =>
+        `<div class="stat-item">${stat.charAt(0).toUpperCase() + stat.slice(1)}: ${player.stats[stat]}</div>`
+    ).join('');
 
     statsContainer.innerHTML = `
         <div class="stats-section">
             <h3>Player Stats</h3>
-            <div class="stat-item">Health: ${player.stats.health}</div>
-            <div class="stat-item">Damage: ${player.stats.damage}</div>
-            <div class="stat-item">Defense: ${player.stats.defense}</div>
-            <div class="stat-item">Crit Chance: ${player.stats.critChance}</div>
-            <div class="stat-item">Crit Damage: ${player.stats.critDamage}</div>
-            <div class="stat-item">Attack Speed: ${player.stats.attackSpeed}</div>
+            ${statsHTML}
         </div>
         <div class="equipment-section">
             <h3>Current Equipment</h3>
-            <div class="equipment-slot">
-                <span class="slot-name">Weapon:</span>
-                <span class="item-name">${player.equipment.weapon?.weaponName ?? 'None'}</span>
-                ${player.equipment.weapon ? '<button onclick="window.unequipItem()">Unequip</button>' : ''}
-            </div>
+            ${equipmentHTML}
         </div>
         <div class="inventory-section">
             <h3>Inventory (${player.inventory.length}/${player.maxInventorySize})</h3>
-            ${inventoryHTML}
+            <div class="inventory-grid">${inventoryHTML}</div>
         </div>
     `;
 
-    // Add event listeners for tooltips after rendering
     setTimeout(() => {
-        const inventoryItems = document.querySelectorAll('.inventory-item');
-        inventoryItems.forEach(item => {
-            const itemIndex = item.dataset.itemIndex;
-            const itemData = player.inventory[itemIndex];
-            
-            item.addEventListener('mouseenter', (e) => {
-                removeExistingTooltips();
-                const tooltip = createTooltip(itemData);
-                document.body.appendChild(tooltip);
-                updateTooltipPosition(e, tooltip);
-                
-                const moveHandler = (e) => updateTooltipPosition(e, tooltip);
-                
-                item.addEventListener('mousemove', moveHandler);
-                item.addEventListener('mouseleave', () => {
-                    removeExistingTooltips();
-                });
-            });
+        // Add tooltip listeners for inventory items
+        document.querySelectorAll('.inventory-item').forEach(item => {
+            const itemData = player.inventory[item.dataset.itemIndex];
+            if (itemData) { // Only add listener if item exists
+                tooltipHandler.add(item, itemData);
+            }
         });
 
-        // Add tooltip for equipped weapon if it exists
-        const equippedWeapon = document.querySelector('.equipment-slot');
-        if (player.equipment.weapon) {
-            equippedWeapon.addEventListener('mouseenter', (e) => {
-                removeExistingTooltips();
-                const tooltip = createTooltip(player.equipment.weapon);
-                document.body.appendChild(tooltip);
-                updateTooltipPosition(e, tooltip);
-                
-                const moveHandler = (e) => updateTooltipPosition(e, tooltip);
-                equippedWeapon.addEventListener('mousemove', moveHandler);
-                equippedWeapon.addEventListener('mouseleave', () => {
-                    removeExistingTooltips();
-                });
-            });
-        }
-    }, 0);
+        // Add tooltip listeners for equipped items
+        equipmentSlots.forEach(slot => {
+            const element = document.querySelector(`.equipment-slot[data-slot="${slot}"]`);
+            const equippedItem = player.equipment[slot];
+            if (equippedItem) {
+                tooltipHandler.add(element, equippedItem);
+            }
+        });
+    });
 }
 
 export function openStatsModal() {
-    const modal = document.getElementById('stats-modal');
+    const modal = DOM.modals.stats;
     modal.style.display = 'block';
 }
 
 export function initializeModalHandlers() {
-    const modal = document.getElementById('stats-modal');
-    const closeButton = modal.querySelector('.close-modal');
-    function closeModal() {
-        modal.style.display = 'none';
-    }
-    closeButton.addEventListener('click', closeModal);
+    const modalTypes = ['stats', 'shop'];
+    const handlers = {};
+    
+    modalTypes.forEach(type => {
+        const modal = DOM.modals[type];
+        const closeModal = () => modal.style.display = 'none';
+        
+        modal.querySelector('.close-modal').addEventListener('click', closeModal);
+        handlers[type] = { modal, close: closeModal };
+    });
+
     window.addEventListener('click', (event) => {
-        if (event.target === modal) {
-            closeModal();
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = 'none';
         }
     });
 }
 
-export function updateHealthDisplay(player, enemy) {
-    const playerHealthValue = document.getElementById('player-health-value');
-    const enemyHealthValue = document.getElementById('enemy-health-value');
-    const playerHealthBar = document.getElementById('player-health-bar');
-    const enemyHealthBar = document.getElementById('enemy-health-bar');
-    
-    playerHealthValue.textContent = player.stats.health
-    enemyHealthValue.textContent = enemy.stats.health
-    
-    
-    // Update health bars
-    const playerHealthPercent = (player.stats.health / 200) * 100;
-    const enemyHealthPercent = (enemy.stats.health / enemy.stats.maxHealth) * 100;
-    
-    playerHealthBar.style.width = `${playerHealthPercent}%`;
-    enemyHealthBar.style.width = `${enemyHealthPercent}%`;
+// Optimize shop display by removing redundant HTML string concatenation
+export function displayShop(player, category = 'weapons') {
+    const shopItems = DOM.shopItems;
+    const shopConfig = {
+        weapons: [
+            GAME_CONFIG.shop.items.basicWeapon,
+            GAME_CONFIG.shop.items.premiumWeapon
+        ],
+        armor: [
+            GAME_CONFIG.shop.items.basicArmor,
+            GAME_CONFIG.shop.items.premiumArmor
+        ]
+    };
+
+    // Remove createShopItem and clone from template instead
+    function updateShopDisplay(selectedCategory) {
+        shopItems.innerHTML = '';
+        const template = document.getElementById('shop-item-template');
+        shopConfig[selectedCategory].forEach(item => {
+            const clone = template.content.cloneNode(true);
+            const shopItem = clone.querySelector('.shop-item');
+            shopItem.dataset.price = item.price;
+            shopItem.dataset.type = item.type;
+            
+            clone.querySelector('.item-name').textContent = item.name;
+            clone.querySelector('.item-description').textContent = item.description;
+            clone.querySelector('.shop-item-price').textContent = item.price + ' Gold';
+
+            const button = clone.querySelector('button');
+            const canAfford = player.gold >= item.price;
+            
+            // Add visual feedback for affordability
+            if (!canAfford) {
+                button.classList.add('cant-afford');
+                shopItem.classList.add('unaffordable');
+            }
+            
+            button.textContent = canAfford ? 'Buy Now' : 'Not Enough Gold';
+            button.disabled = !canAfford;
+            button.setAttribute('onclick', `window.buyItem('${item.type}', ${item.price})`);
+
+            shopItems.appendChild(clone);
+        });
+    }
+
+    // Initialize shop tabs
+    document.querySelectorAll('.shop-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.shop-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            updateShopDisplay(tab.dataset.category);
+        });
+    });
+
+    // Show initial category
+    updateShopDisplay(category);
 }
 
-export function showBattlePanel(show = true) {
-    const panel = document.getElementById('battle-health-panel');
-    panel.style.display = show ? 'block' : 'none';
+// Add purchase animation handler
+export function animatePurchase(type, price) {
+    const items = document.querySelectorAll('.shop-item');
+    items.forEach(item => {
+        if (item.dataset.type === type && Number(item.dataset.price) === price) {
+            item.classList.add('purchase-animation');
+            setTimeout(() => item.classList.remove('purchase-animation'), 300);
+        }
+    });
+}
+
+export function openShopModal(player) {  // Add player parameter
+    const modal = DOM.modals.shop;
+    modal.style.display = 'block';
+    
+    // Reset to weapons tab when opening shop
+    const weaponsTab = document.querySelector('.shop-tab[data-category="weapons"]');
+    const armorTab = document.querySelector('.shop-tab[data-category="armor"]');
+    
+    if (weaponsTab && armorTab) {
+        weaponsTab.classList.add('active');
+        armorTab.classList.remove('active');
+        displayShop(player, 'weapons'); // Use passed player parameter
+    }
+}
+
+// Add export to the function
+export function initializeLevelSelector(currentSelectedLevel, player) {
+    console.log(player.unlockedData.unlockedLevel)
+    const unlockedLevel = player.unlockedData.unlockedLevel;
+    console.log(unlockedLevel)
+    const visibleLevels = 10;
+    let currentStartLevel = Math.max(1, currentSelectedLevel - Math.floor(visibleLevels/2));
+    
+    const renderLevelButtons = (startLevel) => {
+        return Array.from({ length: visibleLevels }, (_, i) => {
+            const level = startLevel + i;
+            const isUnlocked = level <= unlockedLevel;
+            const isCurrent = level === currentSelectedLevel;
+            
+            return `
+                <button 
+                    class="level-btn ${isUnlocked ? 'unlocked' : 'locked'} ${isCurrent ? 'current' : ''}"
+                    onclick="window.selectLevel(${level})"
+                    ${!isUnlocked ? 'disabled' : ''}
+                >
+                    ${level}
+                </button>
+            `;
+        }).join('');
+    };
+
+    const updateDisplay = () => {
+        DOM.levelGrid.innerHTML = `
+            <button class="level-nav prev-levels" ${currentStartLevel <= 1 ? 'disabled' : ''}>←</button>
+            <div class="level-numbers">
+                ${renderLevelButtons(currentStartLevel)}
+            </div>
+            <button class="level-nav next-levels">→</button>
+        `;
+
+        // Add navigation handlers
+        DOM.levelGrid.querySelector('.prev-levels').addEventListener('click', () => {
+            if (currentStartLevel > 1) {
+                currentStartLevel = Math.max(1, currentStartLevel - visibleLevels);
+                updateDisplay();
+            }
+        });
+
+        DOM.levelGrid.querySelector('.next-levels').addEventListener('click', () => {
+            currentStartLevel += visibleLevels;
+            updateDisplay();
+        });
+    };
+
+    updateDisplay();
 }

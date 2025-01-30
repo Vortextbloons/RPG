@@ -19,26 +19,11 @@
             <div class="gold-display">Gold: <span id="gold-amount">0</span></div>
         </div>
         
-        <!-- Add this new health panel -->
-        <div id="battle-health-panel" class="battle-health-panel">
-            <div class="health-bar-container">
-                <div>Player: <span id="player-health-value">200</span></div>
-                <div class="health-bar">
-                    <div id="player-health-bar" class="health-fill"></div>
-                </div>
-            </div>
-            <div class="health-bar-container">
-                <div>Enemy: <span id="enemy-health-value">100</span></div>
-                <div class="health-bar">
-                    <div id="enemy-health-bar" class="health-fill"></div>
-                </div>
-            </div>
-        </div>
+        <!-- Remove battle-stats div completely -->
 
         <div class="action-buttons">
-            <button id="battle">Battle</button>
-            <button id="generate-weapon">Generate Weapon (50 Gold)</button>
             <button id="show-stats">Inventory & Stats</button>
+            <button id="show-shop">Shop</button>
         </div>
 
         <div id="stats-modal" class="modal">
@@ -49,8 +34,63 @@
             </div>
         </div>
 
-        <h3>Battle Log</h3>
-        <div id="battle_log"></div>
+        <!-- Add new shop modal -->
+        <div id="shop-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2>Shop</h2>
+                <div class="shop-categories">
+                    <button class="shop-tab active" data-category="weapons">Weapons</button>
+                    <button class="shop-tab" data-category="armor">Armor</button>
+                </div>
+                <div id="shop-items"></div>
+            </div>
+        </div>
+
+        <!-- Add shop item template -->
+        <template id="shop-item-template">
+            <div class="shop-item hoverable" data-price="" data-type="">
+                <div class="shop-item-info">
+                    <div class="item-name"><!-- ... --></div>
+                    <div class="item-description"><!-- ... --></div>
+                </div>
+                <div class="shop-item-price"><!-- ... --></div>
+                <button><!-- ... --></button>
+            </div>
+        </template>
+ 
+        <div class="battle-container">
+            <!-- Inside battle-container, before battle-header -->
+            <div class="level-selector">
+                <h3>Level Selection</h3>
+                <div class="level-grid" id="level-grid"></div>
+            </div>
+            <div class="battle-header">
+                <h3>Battle Log</h3>
+                <button id="start-battle" class="battle-button">Start Battle</button>
+            </div>
+            
+            <!-- Add health bars container -->
+            <div class="battle-stats hidden">
+                <div class="combatant-stats player-stats">
+                    <div class="health-label">Player</div>
+                    <div class="health-bar">
+                        <div class="health-fill player-health"></div>
+                        <span class="health-text"></span>
+                    </div>
+                </div>
+                
+                <div class="combatant-stats enemy-stats">
+                    <div class="health-label">Enemy</div>
+                    <div class="health-bar">
+                        <div class="health-fill enemy-health"></div>
+                        <span class="health-text"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="battle_log"></div>
+        </div>
     </main>
     <script type="module" src="main.js"></script>
 </body>

@@ -1,0 +1,34 @@
+{
+    "chestplates": {
+        "Strong Chestplate": {
+            "name": "Strong Chestplate",
+            "weight": 5,
+            "stats": {
+                "defense": 20,
+                "health": 50,
+                "damage": 10,
+                "critChance": 5
+            }
+        },
+        "Mighty Chestplate": {
+            "name": "Mighty Chestplate",
+            "weight": 2,
+            "stats": {
+                "defense": 10,
+                "health": 45,
+                "damage": 25,
+                "critChance": 8,
+                "critDamage": 0.5
+            }
+        },
+        "ChainMail Chestplate": {
+            "name": "ChainMail Chestplate",
+            "weight": 8,
+            "stats": {
+                "defense": 30,
+                "health": 80,
+                "critDamage": 0.20
+            }
+        }
+    }
+}
