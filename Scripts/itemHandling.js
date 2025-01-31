@@ -1,12 +1,16 @@
 import { randomPart } from "./Util.js";
+const BASE_PATH = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+    ? "."
+    : "/RPG";
+
 async function fetchAmrorData() {
-    const preFix = await fetch("./JSON Data/ItemJSON/ArmorJSON/amorSetPrefix.json");
-    const endings = await fetch("./JSON Data/ItemJSON/ArmorJSON/amorSetEnding.json");
-    const rarities = await fetch("./JSON Data/ItemJSON/rarity.json");
-    const helmet = await fetch("./JSON Data/ItemJSON/ArmorJSON/helmets.json");
-    const chestplate = await fetch("./JSON Data/ItemJSON/ArmorJSON/chestplates.json");
-    const leggings = await fetch("./JSON Data/ItemJSON/ArmorJSON/leggings.json");
-    const boots = await fetch("./JSON Data/ItemJSON/ArmorJSON/boots.json");
+    const preFix = await fetch(`${BASE_PATH}/JSON Data/ItemJSON/ArmorJSON/amorSetPrefix.json`);
+    const endings = await fetch(`${BASE_PATH}/JSON Data/ItemJSON/ArmorJSON/amorSetEnding.json`);
+    const rarities = await fetch(`${BASE_PATH}/JSON Data/ItemJSON/rarity.json`);
+    const helmet = await fetch(`${BASE_PATH}/JSON Data/ItemJSON/ArmorJSON/helmets.json`);
+    const chestplate = await fetch(`${BASE_PATH}/JSON Data/ItemJSON/ArmorJSON/chestplates.json`);
+    const leggings = await fetch(`${BASE_PATH}/JSON Data/ItemJSON/ArmorJSON/leggings.json`);
+    const boots = await fetch(`${BASE_PATH}/JSON Data/ItemJSON/ArmorJSON/boots.json`);
     return {
         prefixes: await preFix.json(),
         endings: await endings.json(),
@@ -112,10 +116,10 @@ class Weapon {
 }
 
 async function fetchWeaponData() {
-    const preFix = await fetch("./JSON Data/itemJSON/weaponJSON/prefix.json");
-    const weaponNames = await fetch("./JSON Data/itemJSON/weaponJSON/weaponName.json");
-    const endings = await fetch("./JSON Data/itemJSON/weaponJSON/ending.json");
-    const rarities = await fetch("./JSON Data/itemJSON/rarity.json");
+    const preFix = await fetch(`${BASE_PATH}/JSON Data/itemJSON/weaponJSON/prefix.json`);
+    const weaponNames = await fetch(`${BASE_PATH}/JSON Data/itemJSON/weaponJSON/weaponName.json`);
+    const endings = await fetch(`${BASE_PATH}/JSON Data/itemJSON/weaponJSON/ending.json`);
+    const rarities = await fetch(`${BASE_PATH}/JSON Data/itemJSON/rarity.json`);
     return {
         prefixes: await preFix.json(),
         weapon_names: await weaponNames.json(),
