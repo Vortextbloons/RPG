@@ -10,7 +10,6 @@ import {
     openStatsModal,
     displayShop,
     openShopModal,
-    animatePurchase,
     initializeLevelSelector  // Add this import
 } from "./Scripts/displayScripts.js";
 import { GAME_CONFIG } from './Scripts/gameConfig.js';
@@ -28,8 +27,8 @@ initializeModalHandlers();
 initializeLevelSelector(selectedLevel, player);
 displayStats(player); // Move this after loading game data
 updateGoldDisplay(player.gold);
-console.log(player)
-// Remove redundant tooltip handling and combine into single function
+
+
 function handleTooltipAndAction(action) {
     document.getElementById('item-tooltip')?.remove();
     action();
@@ -76,10 +75,9 @@ window.buyItem = (type, price) => {
 
     const item = type === 'weapon' ? generateWeapon() : generateArmor();
     if (player.addInventory(item)) {
-        animatePurchase(type, price); // Now this function is available
         updateBattleLog(`Bought ${type}: ${item.name}`, 'victory');
         displayStats(player);
-
+        
         // Keep current shop tab active
         const activeTab = document.querySelector('.shop-tab.active');
         const currentCategory = activeTab ? activeTab.dataset.category : 'weapons';
@@ -172,6 +170,7 @@ function clearStorage(){
     console.log(localStorage)
     console.log("Cleared local storage");
 }
+console.log(player)
 displayStats(player);
 
 initializeModalHandlers(player);

@@ -1,8 +1,55 @@
 import { GAME_CONFIG } from './gameConfig.js';
 import { randomPart } from './Util.js';
 
-export class Player {
+class CombatEntity {
+    constructor() {
+        this.activeEffects = new Set();
+    }
+
+    addEffect(effect) {
+        effect.onApply(this);
+        this.activeEffects.add(effect);
+    }
+
+    removeEffect(effect) {
+        effect.onRemove(this);
+        this.activeEffects.delete(effect);
+    }
+
+    updateEffects() {
+        for (const effect of this.activeEffects) {
+            if (effect.update()) {
+                this.removeEffect(effect);
+            }
+        }
+    }
+}
+export class StatusEffect {
+    constructor(name, duration = Infinity) {
+        this.name = name;
+        this.duration = duration;
+        this.currentTurn = 0;
+    }
+
+    onApply(target) { }
+    onRemove(target) { }
+    onPreDamage(attacker, defender, damage) { return damage; }
+    onPostDamage(attacker, defender, damageDealt) { }
+    onTurnStart(entity) { }
+    onTurnEnd(entity) { }
+
+    update() {
+        if (this.duration !== Infinity) {
+            this.currentTurn++;
+            return this.currentTurn >= this.duration;
+        }
+        return false;
+    }
+}
+
+export class Player extends CombatEntity {
     constructor(item = "None") {
+        super();
         const config = GAME_CONFIG.player;
         this.gold = config.startingGold;
         this.stats = {
@@ -12,7 +59,8 @@ export class Player {
             critChance: config.baseCritChance,
             critDamage: config.baseCritDamage,
             attackSpeed: config.baseAttackSpeed,
-            Element: 'None',
+            statusChance: 0,
+            element: 'None',
         }
         this.equipment = {
             weapon: null,
@@ -30,15 +78,25 @@ export class Player {
 
     applyItemStats(item, sign = 1) {
         if (!item?.stats) return;
-        
+        else if (item.element){
+            if(sign >= 1){
+                this.stats.Element = item.element;
+            }
+            else{
+                this.stats.Element = 'None';
+            }
+        }
         Object.entries(item.stats).forEach(([key, value]) => {
             if (value) {
+
                 if (key === 'attackSpeed') {
                     this.stats[key] = sign <= -1 ? 3 : value * sign;
                 } else {
-                    this.stats[key] = (this.stats[key] || 0) + Number(value) * sign;
+                    this.stats[key] = ((this.stats[key] || 0) + Number(value) * sign);
+                    this.stats[key] = Number(this.stats[key].toFixed(2));
                 }
             }
+            
         });
 
         this.stats.statusChance = sign > 0 ? Number(item.stats.statusChance || 0) : 0;
@@ -117,13 +175,14 @@ const enemyTypeData = await getEnemyData();
 
 const eliteData = await getEliteData();
 
-export class Enemy {
+export class Enemy extends CombatEntity {
     constructor(level = 1) {
+        super();
         this.level = Number(level) || 1;
         this.enemyType = randomPart(enemyTypeData, 'stats').item_value
         this.eliteType = randomPart(eliteData, 'stats').item_value;
         this.name = `Level ${this.level} ${this.enemyType.name}`;
-        
+
         // Update scaling based on level config
         const scaling = GAME_CONFIG.levels.levelScaling;
         this.stats = {
@@ -134,23 +193,23 @@ export class Enemy {
             critDamage: Number(((this.enemyType.stats.critDamage * .90) + (this.level * .05)).toFixed(2)),
             attackSpeed: this.enemyType.stats.attackSpeed
         }
-        
+
         this.isElite = false;
-        
+
         // Scale coin rewards with level
         this.coinValue = this.enemyType.stats.coinValue * Math.pow(scaling.goldReward, this.level);
-        
+
         const randomNum = Math.random();
-        if(randomNum >= .85){
+        if (randomNum >= .85) {
             this.stats.health += Number((this.eliteType.stats.health * (this.level)));
-            this.stats.defense += Number((this.eliteType.stats.defense * (this.level )));
+            this.stats.defense += Number((this.eliteType.stats.defense * (this.level)));
             this.stats.damage += Number((this.eliteType.stats.damage * (this.level)));
-            this.stats.critChance += Number((this.eliteType.stats.critChance + (this.level )));
+            this.stats.critChance += Number((this.eliteType.stats.critChance + (this.level)));
             this.stats.critDamage = Number(((this.stats.critDamage * this.eliteType.stats.critDamage) + ((this.level * .05))).toFixed(2));
             this.coinValue += (this.eliteType.weight * 2) * (this.level * 3);
             this.isElite = true;
-            this.name = ( `Level ${this.level} ${this.eliteType.name} ${this.enemyType.name}`);
+            this.name = (`Level ${this.level} ${this.eliteType.name} ${this.enemyType.name}`);
         }
     }
-  
+
 }

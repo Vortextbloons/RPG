@@ -1,16 +1,12 @@
 import { randomPart } from "./Util.js";
-const BASE_PATH = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
-    ? "."
-    : "/RPG";
-
 async function fetchAmrorData() {
-    const preFix = await fetch(`${BASE_PATH}/JSON Data/ItemJSON/ArmorJSON/amorSetPrefix.json`);
-    const endings = await fetch(`${BASE_PATH}/JSON Data/ItemJSON/ArmorJSON/amorSetEnding.json`);
-    const rarities = await fetch(`${BASE_PATH}/JSON Data/ItemJSON/rarity.json`);
-    const helmet = await fetch(`${BASE_PATH}/JSON Data/ItemJSON/ArmorJSON/helmets.json`);
-    const chestplate = await fetch(`${BASE_PATH}/JSON Data/ItemJSON/ArmorJSON/chestplates.json`);
-    const leggings = await fetch(`${BASE_PATH}/JSON Data/ItemJSON/ArmorJSON/leggings.json`);
-    const boots = await fetch(`${BASE_PATH}/JSON Data/ItemJSON/ArmorJSON/boots.json`);
+    const preFix = await fetch("./JSON Data/ItemJSON/ArmorJSON/amorSetPrefix.json");
+    const endings = await fetch("./JSON Data/ItemJSON/ArmorJSON/amorSetEnding.json");
+    const rarities = await fetch("./JSON Data/ItemJSON/rarity.json");
+    const helmet = await fetch("./JSON Data/ItemJSON/ArmorJSON/helmets.json");
+    const chestplate = await fetch("./JSON Data/ItemJSON/ArmorJSON/chestplates.json");
+    const leggings = await fetch("./JSON Data/ItemJSON/ArmorJSON/leggings.json");
+    const boots = await fetch("./JSON Data/ItemJSON/ArmorJSON/boots.json");
     return {
         prefixes: await preFix.json(),
         endings: await endings.json(),
@@ -78,9 +74,9 @@ export function generateArmor(){
     const ending = randomPart(items.endings.endings, 'stats');
     const rarity = randomPart(items.rarities.rarities, 'stats');
     const armorType = items.typesOfArmor[type];
-    console.log(type)
+
     const armorName = randomPart(armorType[type], 'stats');
-    console.log(armorName)
+
     const armor = new Armor(prefix.item_value, ending.item_value, armorName.item_value, rarity.item_value);
   
     return {
@@ -116,10 +112,10 @@ class Weapon {
 }
 
 async function fetchWeaponData() {
-    const preFix = await fetch(`${BASE_PATH}/JSON Data/itemJSON/weaponJSON/prefix.json`);
-    const weaponNames = await fetch(`${BASE_PATH}/JSON Data/itemJSON/weaponJSON/weaponName.json`);
-    const endings = await fetch(`${BASE_PATH}/JSON Data/itemJSON/weaponJSON/ending.json`);
-    const rarities = await fetch(`${BASE_PATH}/JSON Data/itemJSON/rarity.json`);
+    const preFix = await fetch("./JSON Data/itemJSON/weaponJSON/prefix.json");
+    const weaponNames = await fetch("./JSON Data/itemJSON/weaponJSON/weaponName.json");
+    const endings = await fetch("./JSON Data/itemJSON/weaponJSON/ending.json");
+    const rarities = await fetch("./JSON Data/itemJSON/rarity.json");
     return {
         prefixes: await preFix.json(),
         weapon_names: await weaponNames.json(),
@@ -141,6 +137,7 @@ export function generateWeapon() {
     }
 
     return {
+        element: pre_fix.item_value.element,
         name: `${rarity.call_value} ${pre_fix.call_value} ${name.call_value} ${end.call_value}`,
         stats: weapon.weapon_class_stats,
     };

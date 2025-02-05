@@ -1,6 +1,8 @@
 import { updateBattleLog, updateGoldDisplay } from "./displayScripts.js";
 import { GAME_CONFIG } from './gameConfig.js';
 import { initializeLevelSelector } from "./displayScripts.js";
+
+
 let isBattleInProgress = false;
 
 function hyperbolicFunction(x, rate = 80) {
@@ -48,7 +50,20 @@ export function calculateCrits(critChance, critDamage) {
 }
 
 function fight(attacker, defender, isPlayer) {
+    // Process turn start effects
+    let messages = [];
+    attacker.activeEffects?.forEach(effect => {
+        const msg = effect.onTurnStart(attacker);
+        if (msg) messages.push(msg);
+    });
+
     let baseDamage = attacker.stats.damage;
+    
+    // Pre-damage effects
+    attacker.activeEffects?.forEach(effect => {
+        baseDamage = effect.onPreDamage(attacker, defender, baseDamage);
+    });
+
     let damage = calculateDefense(baseDamage, defender.stats.defense);
     
     let critInfo = calculateCrits(attacker.stats.critChance, attacker.stats.critDamage);
@@ -57,15 +72,30 @@ function fight(attacker, defender, isPlayer) {
     }
 
     damage = Number(damage.toFixed(2));
-    // Ensure health doesn't go below 0
     defender.stats.health = Math.max(0, defender.stats.health - damage);
 
-    const message = critInfo.isCrit
+    // Post-damage effects
+    defender.activeEffects?.forEach(effect => {
+        const msg = effect.onPostDamage(attacker, defender, damage);
+        if (msg) messages.push(msg);
+    });
+
+    // Process turn end effects
+    attacker.activeEffects?.forEach(effect => {
+        const msg = effect.onTurnEnd(attacker);
+        if (msg) messages.push(msg);
+    });
+
+    // Update effect durations
+    attacker.updateEffects?.();
+    defender.updateEffects?.();
+
+    const damageMessage = critInfo.isCrit
         ? `${isPlayer ? 'You' : `${attacker.name}`} did ${damage} damage with a crit! (CritTier: ${critInfo.critTier}, CritMultiplier: ${critInfo.critDamage})`
         : `${isPlayer ? 'You' : `${attacker.name}`} did ${damage} damage`;
 
-    updateBattleLog(message);
-    console.log(message);
+    updateBattleLog(damageMessage);
+    messages.forEach(msg => updateBattleLog(msg));
 }
 
 async function delay(ms) {
@@ -165,7 +195,8 @@ export async function battle(player, enemy) {
 
     if (battlePlayer.stats.health <= 0) {
         const goldLost = Math.floor(player.gold * config.enemyScaling.goldLossOnDeath);
-        player.gold -= goldLost.toFixed(2);
+        player.gold -= goldLost
+        player.gold.toFixed(2)
         updateBattleLog(`Player has died to ${enemy.name}! Lost ${goldLost} gold!`, 'death');
         
     } else {
@@ -174,6 +205,7 @@ export async function battle(player, enemy) {
         player.gold += enemy.coinValue;
         initializeLevelSelector(enemy.level, player)
     }
+    
     updateGoldDisplay(player.gold);
     
     setTimeout(() => {
@@ -188,3 +220,4 @@ export async function battle(player, enemy) {
 export function isBattleActive() {
     return isBattleInProgress;
 }
+

@@ -26,68 +26,105 @@ export const updateBattleLog = (() => {
         type && entry.classList.add(`${type}-text`);
         DOM.battleLog.appendChild(entry);
         DOM.battleLog.scrollTop = DOM.battleLog.scrollHeight;
-        
+
         while (DOM.battleLog.children.length > maxMessages) {
             DOM.battleLog.removeChild(DOM.battleLog.firstChild);
         }
     };
 })();
 
-export const updateGoldDisplay = value => 
+export const updateGoldDisplay = value =>
     DOM.goldAmount.textContent = value;
 
-const createTooltip = (() => {
-    const formatStat = ([key, value]) => value ? `
-        <div class="stat-line">
-            <span>${key.charAt(0).toUpperCase() + key.slice(1)}:</span>
-            <span>${key.includes('crit') ? value + (key.includes('Chance') ? '%' : 'x') : value}</span>
-        </div>
-    ` : '';
 
-    return item => {
-        const tooltip = tooltipTemplate.cloneNode(true);
-        tooltip.innerHTML = `
-            <div class="item-name">${item.name}</div>
-            ${Object.entries(item.stats).map(formatStat).join('')}
+
+
+function createTooltip(item) {
+    // Create a new tooltip element from the template
+    const tooltip = tooltipTemplate.cloneNode(true);
+    
+    // Format each stat with proper display
+    function formatStatLine(statName, statValue) {
+        if (!statValue) return '';
+        
+        const capitalizedName = statName.charAt(0).toUpperCase() + statName.slice(1);
+        let displayValue = statValue;
+        
+        // Add % or x for crit stats
+        if (statName.includes('crit')) {
+            displayValue += statName.includes('Chance') ? '%' : 'x';
+        }
+
+        return `
+            <div class="stat-line">
+                <span>${capitalizedName}:</span>
+                <span>${displayValue}</span>
+            </div>
         `;
-        return tooltip;
-    };
-})();
+    }
 
-const tooltipHandler = (() => {
-    let currentTooltip = null;
+    // Build the tooltip HTML
+    const statsHTML = Object.entries(item.stats)
+        .map(([name, value]) => formatStatLine(name, value))
+        .join('');
 
-    const updatePosition = (e, tooltip) => {
-        const {clientX, clientY} = e;
-        const {innerWidth, innerHeight} = window;
-        const {width, height} = tooltip.getBoundingClientRect();
+    tooltip.innerHTML = `
+        <div class="item-name">${item.name}</div>
+        ${statsHTML}
+    `;
+    
+    return tooltip;
+}
+
+// Manages tooltip display and positioning
+const tooltipHandler = {
+    activeTooltip: null,
+
+    // Position the tooltip next to the cursor
+    updateTooltipPosition(event, tooltip) {
+        const mouseX = event.clientX;
+        const mouseY = event.clientY;
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+        const tooltipSize = tooltip.getBoundingClientRect();
         const padding = 10;
 
-        tooltip.style.left = `${clientX + width > innerWidth ? clientX - width - padding : clientX + padding}px`;
-        tooltip.style.top = `${clientY + height > innerHeight ? clientY - height - padding : clientY + padding}px`;
-    };
+        // Prevent tooltip from going off-screen
+        const xPosition = mouseX + tooltipSize.width > screenWidth 
+            ? mouseX - tooltipSize.width - padding 
+            : mouseX + padding;
 
-    return {
-        add: (element, itemData) => {
-            const handlers = {
-                mouseenter: e => {
-                    currentTooltip?.remove();
-                    currentTooltip = createTooltip(itemData);
-                    document.body.appendChild(currentTooltip);
-                    updatePosition(e, currentTooltip);
-                },
-                mousemove: e => currentTooltip && updatePosition(e, currentTooltip),
-                mouseleave: () => {
-                    currentTooltip?.remove();
-                    currentTooltip = null;
-                }
-            };
+        const yPosition = mouseY + tooltipSize.height > screenHeight 
+            ? mouseY - tooltipSize.height - padding 
+            : mouseY + padding;
 
-            Object.entries(handlers).forEach(([event, handler]) => 
-                element.addEventListener(event, handler));
-        }
-    };
-})();
+        tooltip.style.left = `${xPosition}px`;
+        tooltip.style.top = `${yPosition}px`;
+    },
+
+    // Add tooltip behavior to an element
+    add(element, itemData) {
+        element.addEventListener('mouseenter', (e) => {
+            if (this.activeTooltip) this.activeTooltip.remove();
+            this.activeTooltip = createTooltip(itemData);
+            document.body.appendChild(this.activeTooltip);
+            this.updateTooltipPosition(e, this.activeTooltip);
+        });
+
+        element.addEventListener('mousemove', (e) => {
+            if (this.activeTooltip) {
+                this.updateTooltipPosition(e, this.activeTooltip);
+            }
+        });
+
+        element.addEventListener('mouseleave', () => {
+            if (this.activeTooltip) {
+                this.activeTooltip.remove();
+                this.activeTooltip = null;
+            }
+        });
+    }
+};
 
 export function displayStats(player) {
     const statsContainer = DOM.playerStats;
@@ -116,7 +153,7 @@ export function displayStats(player) {
     `).join('');
 
 
-    const stats = ['health', 'damage', 'defense', 'critChance', 'critDamage', 'attackSpeed'];
+    const stats = ['health', 'damage', 'defense', 'critChance', 'critDamage', 'attackSpeed', 'statusChance', 'element'];
     const statsHTML = stats.map(stat =>
         `<div class="stat-item">${stat.charAt(0).toUpperCase() + stat.slice(1)}: ${player.stats[stat]}</div>`
     ).join('');
@@ -164,11 +201,11 @@ export function openStatsModal() {
 export function initializeModalHandlers() {
     const modalTypes = ['stats', 'shop'];
     const handlers = {};
-    
+
     modalTypes.forEach(type => {
         const modal = DOM.modals[type];
         const closeModal = () => modal.style.display = 'none';
-        
+
         modal.querySelector('.close-modal').addEventListener('click', closeModal);
         handlers[type] = { modal, close: closeModal };
     });
@@ -180,7 +217,6 @@ export function initializeModalHandlers() {
     });
 }
 
-// Optimize shop display by removing redundant HTML string concatenation
 export function displayShop(player, category = 'weapons') {
     const shopItems = DOM.shopItems;
     const shopConfig = {
@@ -194,7 +230,7 @@ export function displayShop(player, category = 'weapons') {
         ]
     };
 
-    // Remove createShopItem and clone from template instead
+   
     function updateShopDisplay(selectedCategory) {
         shopItems.innerHTML = '';
         const template = document.getElementById('shop-item-template');
@@ -203,20 +239,20 @@ export function displayShop(player, category = 'weapons') {
             const shopItem = clone.querySelector('.shop-item');
             shopItem.dataset.price = item.price;
             shopItem.dataset.type = item.type;
-            
+
             clone.querySelector('.item-name').textContent = item.name;
             clone.querySelector('.item-description').textContent = item.description;
             clone.querySelector('.shop-item-price').textContent = item.price + ' Gold';
 
             const button = clone.querySelector('button');
             const canAfford = player.gold >= item.price;
-            
+
             // Add visual feedback for affordability
             if (!canAfford) {
                 button.classList.add('cant-afford');
                 shopItem.classList.add('unaffordable');
             }
-            
+
             button.textContent = canAfford ? 'Buy Now' : 'Not Enough Gold';
             button.disabled = !canAfford;
             button.setAttribute('onclick', `window.buyItem('${item.type}', ${item.price})`);
@@ -238,25 +274,14 @@ export function displayShop(player, category = 'weapons') {
     updateShopDisplay(category);
 }
 
-// Add purchase animation handler
-export function animatePurchase(type, price) {
-    const items = document.querySelectorAll('.shop-item');
-    items.forEach(item => {
-        if (item.dataset.type === type && Number(item.dataset.price) === price) {
-            item.classList.add('purchase-animation');
-            setTimeout(() => item.classList.remove('purchase-animation'), 300);
-        }
-    });
-}
-
 export function openShopModal(player) {  // Add player parameter
     const modal = DOM.modals.shop;
     modal.style.display = 'block';
-    
+
     // Reset to weapons tab when opening shop
     const weaponsTab = document.querySelector('.shop-tab[data-category="weapons"]');
     const armorTab = document.querySelector('.shop-tab[data-category="armor"]');
-    
+
     if (weaponsTab && armorTab) {
         weaponsTab.classList.add('active');
         armorTab.classList.remove('active');
@@ -266,18 +291,15 @@ export function openShopModal(player) {  // Add player parameter
 
 // Add export to the function
 export function initializeLevelSelector(currentSelectedLevel, player) {
-    console.log(player.unlockedData.unlockedLevel)
     const unlockedLevel = player.unlockedData.unlockedLevel;
-    console.log(unlockedLevel)
     const visibleLevels = 10;
-    let currentStartLevel = Math.max(1, currentSelectedLevel - Math.floor(visibleLevels/2));
-    
+    let currentStartLevel = Math.max(1, currentSelectedLevel - Math.floor(visibleLevels / 2));
     const renderLevelButtons = (startLevel) => {
         return Array.from({ length: visibleLevels }, (_, i) => {
             const level = startLevel + i;
             const isUnlocked = level <= unlockedLevel;
             const isCurrent = level === currentSelectedLevel;
-            
+
             return `
                 <button 
                     class="level-btn ${isUnlocked ? 'unlocked' : 'locked'} ${isCurrent ? 'current' : ''}"
